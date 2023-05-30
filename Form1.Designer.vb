@@ -46,7 +46,7 @@ Partial Class Form1
         ' 
         ' btnConnect
         ' 
-        btnConnect.Location = New Point(12, 12)
+        btnConnect.Location = New Point(517, 10)
         btnConnect.Name = "btnConnect"
         btnConnect.Size = New Size(91, 54)
         btnConnect.TabIndex = 0
@@ -55,7 +55,7 @@ Partial Class Form1
         ' 
         ' btnDisconnet
         ' 
-        btnDisconnet.Location = New Point(109, 14)
+        btnDisconnet.Location = New Point(614, 10)
         btnDisconnet.Name = "btnDisconnet"
         btnDisconnet.Size = New Size(96, 52)
         btnDisconnet.TabIndex = 1
@@ -64,7 +64,7 @@ Partial Class Form1
         ' 
         ' btnReadProduct
         ' 
-        btnReadProduct.Location = New Point(12, 72)
+        btnReadProduct.Location = New Point(12, 50)
         btnReadProduct.Name = "btnReadProduct"
         btnReadProduct.Size = New Size(91, 25)
         btnReadProduct.TabIndex = 2
@@ -73,14 +73,14 @@ Partial Class Form1
         ' 
         ' txtProduct
         ' 
-        txtProduct.Location = New Point(109, 74)
+        txtProduct.Location = New Point(109, 52)
         txtProduct.Name = "txtProduct"
-        txtProduct.Size = New Size(96, 23)
+        txtProduct.Size = New Size(100, 23)
         txtProduct.TabIndex = 3
         ' 
         ' btnWriteProduct
         ' 
-        btnWriteProduct.Location = New Point(12, 103)
+        btnWriteProduct.Location = New Point(1009, 72)
         btnWriteProduct.Name = "btnWriteProduct"
         btnWriteProduct.Size = New Size(91, 23)
         btnWriteProduct.TabIndex = 4
@@ -89,14 +89,14 @@ Partial Class Form1
         ' 
         ' inputProduct
         ' 
-        inputProduct.Location = New Point(109, 103)
+        inputProduct.Location = New Point(1117, 72)
         inputProduct.Name = "inputProduct"
         inputProduct.Size = New Size(96, 23)
         inputProduct.TabIndex = 5
         ' 
         ' btnReadTest
         ' 
-        btnReadTest.Location = New Point(52, 132)
+        btnReadTest.Location = New Point(557, 70)
         btnReadTest.Name = "btnReadTest"
         btnReadTest.Size = New Size(112, 34)
         btnReadTest.TabIndex = 6
@@ -105,7 +105,7 @@ Partial Class Form1
         ' 
         ' btnReadBaleWeight
         ' 
-        btnReadBaleWeight.Location = New Point(12, 170)
+        btnReadBaleWeight.Location = New Point(12, 5)
         btnReadBaleWeight.Name = "btnReadBaleWeight"
         btnReadBaleWeight.Size = New Size(91, 39)
         btnReadBaleWeight.TabIndex = 7
@@ -114,14 +114,14 @@ Partial Class Form1
         ' 
         ' txtBaleWeight
         ' 
-        txtBaleWeight.Location = New Point(109, 179)
+        txtBaleWeight.Location = New Point(109, 12)
         txtBaleWeight.Name = "txtBaleWeight"
         txtBaleWeight.Size = New Size(100, 23)
         txtBaleWeight.TabIndex = 8
         ' 
         ' btnWriteBaleWeight
         ' 
-        btnWriteBaleWeight.Location = New Point(12, 215)
+        btnWriteBaleWeight.Location = New Point(1009, 101)
         btnWriteBaleWeight.Name = "btnWriteBaleWeight"
         btnWriteBaleWeight.Size = New Size(91, 39)
         btnWriteBaleWeight.TabIndex = 9
@@ -130,14 +130,14 @@ Partial Class Form1
         ' 
         ' txtWriteBaleWeight
         ' 
-        txtWriteBaleWeight.Location = New Point(109, 224)
+        txtWriteBaleWeight.Location = New Point(1117, 110)
         txtWriteBaleWeight.Name = "txtWriteBaleWeight"
         txtWriteBaleWeight.Size = New Size(100, 23)
         txtWriteBaleWeight.TabIndex = 10
         ' 
         ' btnReadPressInfo
         ' 
-        btnReadPressInfo.Location = New Point(12, 260)
+        btnReadPressInfo.Location = New Point(12, 86)
         btnReadPressInfo.Name = "btnReadPressInfo"
         btnReadPressInfo.Size = New Size(91, 39)
         btnReadPressInfo.TabIndex = 11
@@ -146,14 +146,14 @@ Partial Class Form1
         ' 
         ' txtPressInfo
         ' 
-        txtPressInfo.Location = New Point(109, 269)
+        txtPressInfo.Location = New Point(109, 95)
         txtPressInfo.Name = "txtPressInfo"
         txtPressInfo.Size = New Size(100, 23)
         txtPressInfo.TabIndex = 12
         ' 
         ' btnWritePressInfo
         ' 
-        btnWritePressInfo.Location = New Point(12, 305)
+        btnWritePressInfo.Location = New Point(1009, 146)
         btnWritePressInfo.Name = "btnWritePressInfo"
         btnWritePressInfo.Size = New Size(91, 39)
         btnWritePressInfo.TabIndex = 13
@@ -162,14 +162,14 @@ Partial Class Form1
         ' 
         ' txtWritePressInfo
         ' 
-        txtWritePressInfo.Location = New Point(109, 314)
+        txtWritePressInfo.Location = New Point(1117, 155)
         txtWritePressInfo.Name = "txtWritePressInfo"
         txtWritePressInfo.Size = New Size(100, 23)
         txtWritePressInfo.TabIndex = 14
         ' 
         ' btnReadProductionCapacity
         ' 
-        btnReadProductionCapacity.Location = New Point(12, 350)
+        btnReadProductionCapacity.Location = New Point(12, 132)
         btnReadProductionCapacity.Name = "btnReadProductionCapacity"
         btnReadProductionCapacity.Size = New Size(91, 53)
         btnReadProductionCapacity.TabIndex = 15
@@ -178,14 +178,14 @@ Partial Class Form1
         ' 
         ' txtProductionCapacity
         ' 
-        txtProductionCapacity.Location = New Point(109, 366)
+        txtProductionCapacity.Location = New Point(109, 148)
         txtProductionCapacity.Name = "txtProductionCapacity"
         txtProductionCapacity.Size = New Size(100, 23)
         txtProductionCapacity.TabIndex = 16
         ' 
         ' btnWriteProductionCapacity
         ' 
-        btnWriteProductionCapacity.Location = New Point(12, 409)
+        btnWriteProductionCapacity.Location = New Point(1009, 191)
         btnWriteProductionCapacity.Name = "btnWriteProductionCapacity"
         btnWriteProductionCapacity.Size = New Size(91, 58)
         btnWriteProductionCapacity.TabIndex = 17
@@ -194,7 +194,7 @@ Partial Class Form1
         ' 
         ' txtWriteProductionCapacity
         ' 
-        txtWriteProductionCapacity.Location = New Point(109, 428)
+        txtWriteProductionCapacity.Location = New Point(1117, 210)
         txtWriteProductionCapacity.Name = "txtWriteProductionCapacity"
         txtWriteProductionCapacity.Size = New Size(100, 23)
         txtWriteProductionCapacity.TabIndex = 18
@@ -203,7 +203,7 @@ Partial Class Form1
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
-        ClientSize = New Size(217, 479)
+        ClientSize = New Size(1225, 479)
         Controls.Add(txtWriteProductionCapacity)
         Controls.Add(btnWriteProductionCapacity)
         Controls.Add(txtProductionCapacity)
