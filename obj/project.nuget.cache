@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "pKMKUJDXkc4aGubL2cupzax9o7MpFQJ6AN6dUZHDOAym6LxBmhJfhddx84Y8uUGgD+czG99MkTDU/b/dzKP9Iw==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\IT\\Desktop\\PLC\\Projeler\\OkumaYazmaTestPLC\\OkumaYazmaTestPLC.vbproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\IT\\.nuget\\packages\\s7netplus\\0.16.0\\s7netplus.0.16.0.nupkg.sha512"
+  ],
+  "logs": []
+}
