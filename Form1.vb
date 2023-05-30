@@ -137,6 +137,7 @@ Public Class Form1
         Else
             MessageBox.Show("Not connected to PLC")
         End If
+
     End Sub
 
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles btnReadPressInfo.Click
