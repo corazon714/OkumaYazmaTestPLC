@@ -36,6 +36,12 @@ Partial Class Form1
         BackgroundWorker1 = New ComponentModel.BackgroundWorker()
         btnReadPressInfo = New Button()
         txtPressInfo = New TextBox()
+        btnWritePressInfo = New Button()
+        txtWritePressInfo = New TextBox()
+        btnReadProductionCapacity = New Button()
+        txtProductionCapacity = New TextBox()
+        btnWriteProductionCapacity = New Button()
+        txtWriteProductionCapacity = New TextBox()
         SuspendLayout()
         ' 
         ' btnConnect
@@ -145,11 +151,65 @@ Partial Class Form1
         txtPressInfo.Size = New Size(100, 23)
         txtPressInfo.TabIndex = 12
         ' 
+        ' btnWritePressInfo
+        ' 
+        btnWritePressInfo.Location = New Point(12, 305)
+        btnWritePressInfo.Name = "btnWritePressInfo"
+        btnWritePressInfo.Size = New Size(91, 39)
+        btnWritePressInfo.TabIndex = 13
+        btnWritePressInfo.Text = "Write Press Info"
+        btnWritePressInfo.UseVisualStyleBackColor = True
+        ' 
+        ' txtWritePressInfo
+        ' 
+        txtWritePressInfo.Location = New Point(109, 314)
+        txtWritePressInfo.Name = "txtWritePressInfo"
+        txtWritePressInfo.Size = New Size(100, 23)
+        txtWritePressInfo.TabIndex = 14
+        ' 
+        ' btnReadProductionCapacity
+        ' 
+        btnReadProductionCapacity.Location = New Point(12, 350)
+        btnReadProductionCapacity.Name = "btnReadProductionCapacity"
+        btnReadProductionCapacity.Size = New Size(91, 53)
+        btnReadProductionCapacity.TabIndex = 15
+        btnReadProductionCapacity.Text = "Read Production Capacity"
+        btnReadProductionCapacity.UseVisualStyleBackColor = True
+        ' 
+        ' txtProductionCapacity
+        ' 
+        txtProductionCapacity.Location = New Point(109, 366)
+        txtProductionCapacity.Name = "txtProductionCapacity"
+        txtProductionCapacity.Size = New Size(100, 23)
+        txtProductionCapacity.TabIndex = 16
+        ' 
+        ' btnWriteProductionCapacity
+        ' 
+        btnWriteProductionCapacity.Location = New Point(12, 409)
+        btnWriteProductionCapacity.Name = "btnWriteProductionCapacity"
+        btnWriteProductionCapacity.Size = New Size(91, 58)
+        btnWriteProductionCapacity.TabIndex = 17
+        btnWriteProductionCapacity.Text = "Write Production Capacity"
+        btnWriteProductionCapacity.UseVisualStyleBackColor = True
+        ' 
+        ' txtWriteProductionCapacity
+        ' 
+        txtWriteProductionCapacity.Location = New Point(109, 428)
+        txtWriteProductionCapacity.Name = "txtWriteProductionCapacity"
+        txtWriteProductionCapacity.Size = New Size(100, 23)
+        txtWriteProductionCapacity.TabIndex = 18
+        ' 
         ' Form1
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
-        ClientSize = New Size(217, 409)
+        ClientSize = New Size(217, 479)
+        Controls.Add(txtWriteProductionCapacity)
+        Controls.Add(btnWriteProductionCapacity)
+        Controls.Add(txtProductionCapacity)
+        Controls.Add(btnReadProductionCapacity)
+        Controls.Add(txtWritePressInfo)
+        Controls.Add(btnWritePressInfo)
         Controls.Add(txtPressInfo)
         Controls.Add(btnReadPressInfo)
         Controls.Add(txtWriteBaleWeight)
@@ -183,4 +243,10 @@ Partial Class Form1
     Friend WithEvents BackgroundWorker1 As System.ComponentModel.BackgroundWorker
     Friend WithEvents btnReadPressInfo As Button
     Friend WithEvents txtPressInfo As TextBox
+    Friend WithEvents btnWritePressInfo As Button
+    Friend WithEvents txtWritePressInfo As TextBox
+    Friend WithEvents btnReadProductionCapacity As Button
+    Friend WithEvents txtProductionCapacity As TextBox
+    Friend WithEvents btnWriteProductionCapacity As Button
+    Friend WithEvents txtWriteProductionCapacity As TextBox
 End Class

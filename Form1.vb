@@ -158,4 +158,62 @@ Public Class Form1
             MessageBox.Show("Not connected to PLC")
         End If
     End Sub
+
+    Private Sub btnWritePressInfo_Click(sender As Object, e As EventArgs) Handles btnWritePressInfo.Click
+        ' Write Word value to DB 1994, offset 38.0 '
+        If Plc IsNot Nothing AndAlso Plc.IsConnected Then
+            Dim dbNumber As Integer = 1994
+            Dim startByteAdr As Integer = 38
+            Dim valueToWrite As UShort
+
+            If UShort.TryParse(txtWritePressInfo.Text, valueToWrite) Then
+                Dim data As Byte() = BitConverter.GetBytes(valueToWrite)
+                Array.Reverse(data) ' Reverse the byte order for the Endian conversion '
+                Plc.WriteBytes(DataType.DataBlock, dbNumber, startByteAdr, data)
+                MessageBox.Show("Data written to PLC successfully")
+            Else
+                MessageBox.Show("Invalid value")
+            End If
+        Else
+            MessageBox.Show("Not connected to PLC")
+        End If
+    End Sub
+
+    Private Sub btnReadProductionCapacity_Click(sender As Object, e As EventArgs) Handles btnReadProductionCapacity.Click
+        ' Read Real value from DB 1994, offset 40.0 '
+        If Plc IsNot Nothing AndAlso Plc.IsConnected Then
+            Dim dbNumber As Integer = 1994
+            Dim startByteAdr As Integer = 40
+            Dim byteCount As Integer = 4
+            ' Read DB 1994, offset 40.0 '
+            Dim rawData As Byte() = Plc.ReadBytes(DataType.DataBlock, dbNumber, startByteAdr, byteCount)
+            If rawData IsNot Nothing Then
+                Dim result As Single = S7.Net.Types.Real.FromByteArray(rawData)
+                txtProductionCapacity.Text = result.ToString("F2") ' Format the result with 2 decimal places
+            Else
+                MessageBox.Show("Failed to read data from PLC")
+            End If
+        Else
+            MessageBox.Show("Not connected to PLC")
+        End If
+    End Sub
+
+    Private Sub btnWriteProductionCapacity_Click(sender As Object, e As EventArgs) Handles btnWriteProductionCapacity.Click
+        ' Write Real value to DB 1994, offset 40.0 '
+        If Plc IsNot Nothing AndAlso Plc.IsConnected Then
+            Dim dbNumber As Integer = 1994
+            Dim startByteAdr As Integer = 40
+            Dim valueToWrite As Single
+            If Single.TryParse(txtWriteProductionCapacity.Text, valueToWrite) Then
+                Dim data As Byte() = S7.Net.Types.Real.ToByteArray(valueToWrite)
+                Plc.WriteBytes(DataType.DataBlock, dbNumber, startByteAdr, data)
+                MessageBox.Show("Data written to PLC successfully")
+            Else
+                MessageBox.Show("Invalid value")
+            End If
+        Else
+            MessageBox.Show("Not connected to PLC")
+        End If
+    End Sub
+
 End Class
