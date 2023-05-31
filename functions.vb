@@ -6,7 +6,7 @@ Public Class functions
 
     'TOGGLE FUNCTIONS START'
 
-    'This function toggles the value of the bit in the PLC as TRUE or FALSE'
+    'This function toggles the value of the bit in the PLC as TRUE if it is FALSE or FALSE if it is TRUE'
     Public Sub ToggleValueInPLC(plc As Plc, db As Integer, offset As Integer)
         If plc IsNot Nothing AndAlso plc.IsConnected Then
 
@@ -31,6 +31,41 @@ Public Class functions
             MessageBox.Show("Not connected to PLC")
         End If
     End Sub
+
+    'This turnes the value to TRUE'
+    Public Sub SetBoolValueToTrueInPLC(plc As Plc, db As Integer, offset As Integer)
+        If plc IsNot Nothing AndAlso plc.IsConnected Then
+            Dim dbNumber As Integer = CInt(db)
+            Dim startByteAdr As Integer = CInt(offset)
+
+            ' Read the byte containing the bit value '
+            Dim rawData As Byte() = plc.ReadBytes(DataType.DataBlock, dbNumber, startByteAdr, 1)
+            rawData(0) = rawData(0) Or &H1 ' Set the bit value to 1
+            plc.WriteBytes(DataType.DataBlock, dbNumber, startByteAdr, rawData)
+
+            MessageBox.Show("Value set to True in PLC successfully")
+        Else
+            MessageBox.Show("Not connected to PLC")
+        End If
+    End Sub
+
+    'This turnes the value to FALSE'
+    Public Sub SetBoolValueToFalseInPLC(plc As Plc, db As Integer, offset As Integer)
+        If plc IsNot Nothing AndAlso plc.IsConnected Then
+            Dim dbNumber As Integer = CInt(db)
+            Dim startByteAdr As Integer = CInt(offset)
+
+            ' Read the byte containing the bit value '
+            Dim rawData As Byte() = plc.ReadBytes(DataType.DataBlock, dbNumber, startByteAdr, 1)
+            rawData(0) = rawData(0) And Not &H1 ' Set the bit value to 0
+            plc.WriteBytes(DataType.DataBlock, dbNumber, startByteAdr, rawData)
+
+            MessageBox.Show("Value set to False in PLC successfully")
+        Else
+            MessageBox.Show("Not connected to PLC")
+        End If
+    End Sub
+
 
     'TOGGLE FUNCTIONS END'
 
@@ -246,15 +281,24 @@ Public Class functions
     End Sub
 
     'This function writes the INT value to the PLC'
-    Public Sub WriteIntToPLC(plc As Plc, db As Integer, offset As Double, value As Integer)
+    Public Sub WriteIntToPLC(plc As Plc, db As Integer, offset As Double, value As String)
         If plc IsNot Nothing AndAlso plc.IsConnected Then
             Dim dbNumber As Integer = CInt(db)
             Dim startByteAdr As Integer = CInt(offset)
 
-            Dim rawData As Byte() = S7.Net.Types.Int.ToByteArray(value)
-            plc.WriteBytes(DataType.DataBlock, dbNumber, startByteAdr, rawData)
+            If Not String.IsNullOrEmpty(value) AndAlso Integer.TryParse(value, Nothing) Then
+                Dim intValue As Integer = Integer.Parse(value)
+                If intValue >= Short.MinValue AndAlso intValue <= Short.MaxValue Then
+                    Dim rawData As Byte() = S7.Net.Types.Int.ToByteArray(intValue)
+                    plc.WriteBytes(DataType.DataBlock, dbNumber, startByteAdr, rawData)
 
-            MessageBox.Show("Value written to PLC successfully")
+                    MessageBox.Show("Value written to PLC successfully")
+                Else
+                    MessageBox.Show("Invalid value. Value must be within the range of a signed 16-bit integer (Short).")
+                End If
+            Else
+                MessageBox.Show("Invalid value. Value must be a valid integer.")
+            End If
         Else
             MessageBox.Show("Not connected to PLC")
         End If

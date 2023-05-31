@@ -60,6 +60,30 @@ Partial Class Form1
         txtPressingMinute = New TextBox()
         btnWritePressingMinute = New Button()
         txtWritePressingMinute = New TextBox()
+        btnReadPressingSecond = New Button()
+        txtPressingSecond = New TextBox()
+        btnWritePressingSeconds = New Button()
+        txtWritePressingSecond = New TextBox()
+        btnReadBaleID = New Button()
+        txtBaleID = New TextBox()
+        btnWriteBaleID = New Button()
+        txtWriteBaleID = New TextBox()
+        btnReadBaleNo = New Button()
+        txtBaleNo = New TextBox()
+        btnWriteBaleNo = New Button()
+        txtWriteBaleNo = New TextBox()
+        btnReadLotNumber = New Button()
+        txtLotNumber = New TextBox()
+        btnReadRawMaterial = New Button()
+        txtRawMaterial = New TextBox()
+        btnReadOrderNo = New Button()
+        txtOrderNo = New TextBox()
+        btnWriteLotNo = New Button()
+        txtWriteLotNo = New TextBox()
+        btnWriteRawMaterial = New Button()
+        txtWriteRawMaterial = New TextBox()
+        btnWriteOrderNo = New Button()
+        txtWriteOrderNo = New TextBox()
         SuspendLayout()
         ' 
         ' btnConnect
@@ -152,6 +176,9 @@ Partial Class Form1
         txtWriteBaleWeight.Name = "txtWriteBaleWeight"
         txtWriteBaleWeight.Size = New Size(100, 23)
         txtWriteBaleWeight.TabIndex = 10
+        ' 
+        ' BackgroundWorker1
+        ' 
         ' 
         ' btnReadPressInfo
         ' 
@@ -361,11 +388,227 @@ Partial Class Form1
         txtWritePressingMinute.Size = New Size(100, 23)
         txtWritePressingMinute.TabIndex = 36
         ' 
+        ' btnReadPressingSecond
+        ' 
+        btnReadPressingSecond.Location = New Point(12, 421)
+        btnReadPressingSecond.Name = "btnReadPressingSecond"
+        btnReadPressingSecond.Size = New Size(91, 53)
+        btnReadPressingSecond.TabIndex = 37
+        btnReadPressingSecond.Text = "Read Seconds for Bale Pressing"
+        btnReadPressingSecond.UseVisualStyleBackColor = True
+        ' 
+        ' txtPressingSecond
+        ' 
+        txtPressingSecond.Location = New Point(109, 437)
+        txtPressingSecond.Name = "txtPressingSecond"
+        txtPressingSecond.Size = New Size(100, 23)
+        txtPressingSecond.TabIndex = 38
+        ' 
+        ' btnWritePressingSeconds
+        ' 
+        btnWritePressingSeconds.Location = New Point(1009, 424)
+        btnWritePressingSeconds.Name = "btnWritePressingSeconds"
+        btnWritePressingSeconds.Size = New Size(91, 53)
+        btnWritePressingSeconds.TabIndex = 39
+        btnWritePressingSeconds.Text = "Write Seconds for Bale Pressing"
+        btnWritePressingSeconds.UseVisualStyleBackColor = True
+        ' 
+        ' txtWritePressingSecond
+        ' 
+        txtWritePressingSecond.Location = New Point(1117, 440)
+        txtWritePressingSecond.Name = "txtWritePressingSecond"
+        txtWritePressingSecond.Size = New Size(100, 23)
+        txtWritePressingSecond.TabIndex = 40
+        ' 
+        ' btnReadBaleID
+        ' 
+        btnReadBaleID.Location = New Point(275, 6)
+        btnReadBaleID.Name = "btnReadBaleID"
+        btnReadBaleID.Size = New Size(91, 25)
+        btnReadBaleID.TabIndex = 41
+        btnReadBaleID.Text = "Read Bale ID"
+        btnReadBaleID.UseVisualStyleBackColor = True
+        ' 
+        ' txtBaleID
+        ' 
+        txtBaleID.Location = New Point(372, 7)
+        txtBaleID.Name = "txtBaleID"
+        txtBaleID.Size = New Size(100, 23)
+        txtBaleID.TabIndex = 42
+        ' 
+        ' btnWriteBaleID
+        ' 
+        btnWriteBaleID.Location = New Point(762, 8)
+        btnWriteBaleID.Name = "btnWriteBaleID"
+        btnWriteBaleID.Size = New Size(91, 23)
+        btnWriteBaleID.TabIndex = 43
+        btnWriteBaleID.Text = "Write Bale ID"
+        btnWriteBaleID.UseVisualStyleBackColor = True
+        ' 
+        ' txtWriteBaleID
+        ' 
+        txtWriteBaleID.Location = New Point(868, 9)
+        txtWriteBaleID.Name = "txtWriteBaleID"
+        txtWriteBaleID.Size = New Size(100, 23)
+        txtWriteBaleID.TabIndex = 44
+        ' 
+        ' btnReadBaleNo
+        ' 
+        btnReadBaleNo.Location = New Point(275, 37)
+        btnReadBaleNo.Name = "btnReadBaleNo"
+        btnReadBaleNo.Size = New Size(91, 25)
+        btnReadBaleNo.TabIndex = 45
+        btnReadBaleNo.Text = "Read Bale No"
+        btnReadBaleNo.UseVisualStyleBackColor = True
+        ' 
+        ' txtBaleNo
+        ' 
+        txtBaleNo.Location = New Point(372, 37)
+        txtBaleNo.Name = "txtBaleNo"
+        txtBaleNo.Size = New Size(100, 23)
+        txtBaleNo.TabIndex = 46
+        ' 
+        ' btnWriteBaleNo
+        ' 
+        btnWriteBaleNo.Location = New Point(762, 37)
+        btnWriteBaleNo.Name = "btnWriteBaleNo"
+        btnWriteBaleNo.Size = New Size(91, 23)
+        btnWriteBaleNo.TabIndex = 47
+        btnWriteBaleNo.Text = "Write Bale No"
+        btnWriteBaleNo.UseVisualStyleBackColor = True
+        ' 
+        ' txtWriteBaleNo
+        ' 
+        txtWriteBaleNo.Location = New Point(868, 36)
+        txtWriteBaleNo.Name = "txtWriteBaleNo"
+        txtWriteBaleNo.Size = New Size(100, 23)
+        txtWriteBaleNo.TabIndex = 48
+        ' 
+        ' btnReadLotNumber
+        ' 
+        btnReadLotNumber.Location = New Point(275, 68)
+        btnReadLotNumber.Name = "btnReadLotNumber"
+        btnReadLotNumber.Size = New Size(91, 41)
+        btnReadLotNumber.TabIndex = 49
+        btnReadLotNumber.Text = "Read Lot Number"
+        btnReadLotNumber.UseVisualStyleBackColor = True
+        ' 
+        ' txtLotNumber
+        ' 
+        txtLotNumber.Location = New Point(372, 78)
+        txtLotNumber.Name = "txtLotNumber"
+        txtLotNumber.Size = New Size(100, 23)
+        txtLotNumber.TabIndex = 50
+        ' 
+        ' btnReadRawMaterial
+        ' 
+        btnReadRawMaterial.Location = New Point(275, 115)
+        btnReadRawMaterial.Name = "btnReadRawMaterial"
+        btnReadRawMaterial.Size = New Size(91, 41)
+        btnReadRawMaterial.TabIndex = 51
+        btnReadRawMaterial.Text = "Read Raw Material"
+        btnReadRawMaterial.UseVisualStyleBackColor = True
+        ' 
+        ' txtRawMaterial
+        ' 
+        txtRawMaterial.Location = New Point(372, 124)
+        txtRawMaterial.Name = "txtRawMaterial"
+        txtRawMaterial.Size = New Size(100, 23)
+        txtRawMaterial.TabIndex = 52
+        ' 
+        ' btnReadOrderNo
+        ' 
+        btnReadOrderNo.Location = New Point(275, 162)
+        btnReadOrderNo.Name = "btnReadOrderNo"
+        btnReadOrderNo.Size = New Size(91, 41)
+        btnReadOrderNo.TabIndex = 53
+        btnReadOrderNo.Text = "Read Order No"
+        btnReadOrderNo.UseVisualStyleBackColor = True
+        ' 
+        ' txtOrderNo
+        ' 
+        txtOrderNo.Location = New Point(372, 172)
+        txtOrderNo.Name = "txtOrderNo"
+        txtOrderNo.Size = New Size(100, 23)
+        txtOrderNo.TabIndex = 54
+        ' 
+        ' btnWriteLotNo
+        ' 
+        btnWriteLotNo.Location = New Point(762, 66)
+        btnWriteLotNo.Name = "btnWriteLotNo"
+        btnWriteLotNo.Size = New Size(91, 41)
+        btnWriteLotNo.TabIndex = 55
+        btnWriteLotNo.Text = "Write Lot Number"
+        btnWriteLotNo.UseVisualStyleBackColor = True
+        ' 
+        ' txtWriteLotNo
+        ' 
+        txtWriteLotNo.Location = New Point(868, 76)
+        txtWriteLotNo.Name = "txtWriteLotNo"
+        txtWriteLotNo.Size = New Size(100, 23)
+        txtWriteLotNo.TabIndex = 56
+        ' 
+        ' btnWriteRawMaterial
+        ' 
+        btnWriteRawMaterial.Location = New Point(762, 113)
+        btnWriteRawMaterial.Name = "btnWriteRawMaterial"
+        btnWriteRawMaterial.Size = New Size(91, 41)
+        btnWriteRawMaterial.TabIndex = 57
+        btnWriteRawMaterial.Text = "Write Raw Material"
+        btnWriteRawMaterial.UseVisualStyleBackColor = True
+        ' 
+        ' txtWriteRawMaterial
+        ' 
+        txtWriteRawMaterial.Location = New Point(868, 119)
+        txtWriteRawMaterial.Name = "txtWriteRawMaterial"
+        txtWriteRawMaterial.Size = New Size(100, 23)
+        txtWriteRawMaterial.TabIndex = 58
+        ' 
+        ' btnWriteOrderNo
+        ' 
+        btnWriteOrderNo.Location = New Point(762, 160)
+        btnWriteOrderNo.Name = "btnWriteOrderNo"
+        btnWriteOrderNo.Size = New Size(91, 41)
+        btnWriteOrderNo.TabIndex = 59
+        btnWriteOrderNo.Text = "Write Order Number"
+        btnWriteOrderNo.UseVisualStyleBackColor = True
+        ' 
+        ' txtWriteOrderNo
+        ' 
+        txtWriteOrderNo.Location = New Point(868, 170)
+        txtWriteOrderNo.Name = "txtWriteOrderNo"
+        txtWriteOrderNo.Size = New Size(100, 23)
+        txtWriteOrderNo.TabIndex = 60
+        ' 
         ' Form1
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
         ClientSize = New Size(1225, 479)
+        Controls.Add(txtWriteOrderNo)
+        Controls.Add(btnWriteOrderNo)
+        Controls.Add(txtWriteRawMaterial)
+        Controls.Add(btnWriteRawMaterial)
+        Controls.Add(txtWriteLotNo)
+        Controls.Add(btnWriteLotNo)
+        Controls.Add(txtOrderNo)
+        Controls.Add(btnReadOrderNo)
+        Controls.Add(txtRawMaterial)
+        Controls.Add(btnReadRawMaterial)
+        Controls.Add(txtLotNumber)
+        Controls.Add(btnReadLotNumber)
+        Controls.Add(txtWriteBaleNo)
+        Controls.Add(btnWriteBaleNo)
+        Controls.Add(txtBaleNo)
+        Controls.Add(btnReadBaleNo)
+        Controls.Add(txtWriteBaleID)
+        Controls.Add(btnWriteBaleID)
+        Controls.Add(txtBaleID)
+        Controls.Add(btnReadBaleID)
+        Controls.Add(txtWritePressingSecond)
+        Controls.Add(btnWritePressingSeconds)
+        Controls.Add(txtPressingSecond)
+        Controls.Add(btnReadPressingSecond)
         Controls.Add(txtWritePressingMinute)
         Controls.Add(btnWritePressingMinute)
         Controls.Add(txtPressingMinute)
@@ -447,4 +690,28 @@ Partial Class Form1
     Friend WithEvents txtPressingMinute As TextBox
     Friend WithEvents btnWritePressingMinute As Button
     Friend WithEvents txtWritePressingMinute As TextBox
+    Friend WithEvents btnReadPressingSecond As Button
+    Friend WithEvents txtPressingSecond As TextBox
+    Friend WithEvents btnWritePressingSeconds As Button
+    Friend WithEvents txtWritePressingSecond As TextBox
+    Friend WithEvents btnReadBaleID As Button
+    Friend WithEvents txtBaleID As TextBox
+    Friend WithEvents btnWriteBaleID As Button
+    Friend WithEvents txtWriteBaleID As TextBox
+    Friend WithEvents btnReadBaleNo As Button
+    Friend WithEvents txtBaleNo As TextBox
+    Friend WithEvents btnWriteBaleNo As Button
+    Friend WithEvents txtWriteBaleNo As TextBox
+    Friend WithEvents btnReadLotNumber As Button
+    Friend WithEvents txtLotNumber As TextBox
+    Friend WithEvents btnReadRawMaterial As Button
+    Friend WithEvents txtRawMaterial As TextBox
+    Friend WithEvents btnReadOrderNo As Button
+    Friend WithEvents txtOrderNo As TextBox
+    Friend WithEvents btnWriteLotNo As Button
+    Friend WithEvents txtWriteLotNo As TextBox
+    Friend WithEvents btnWriteRawMaterial As Button
+    Friend WithEvents txtWriteRawMaterial As TextBox
+    Friend WithEvents btnWriteOrderNo As Button
+    Friend WithEvents txtWriteOrderNo As TextBox
 End Class

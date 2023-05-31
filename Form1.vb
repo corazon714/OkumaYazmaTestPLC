@@ -12,7 +12,11 @@ Public Class Form1
     Private Sub btnConnect_Click(sender As Object, e As EventArgs) Handles btnConnect.Click
         ' Connect to PLC at 192.168.10.215 using S7.Net '
         Plc = New Plc(CpuType.S71200, "192.168.10.215", 0, 1)
-        Plc.Open()
+        Try
+            Plc.Open()
+        Catch ex As Exception
+            MessageBox.Show("192.168.10.215 üzerindeki SIEMENS PLC'ye Bağlanılamıyor.")
+        End Try
         If Plc.IsConnected Then
             MessageBox.Show("Connected to PLC")
         Else
@@ -112,5 +116,53 @@ Public Class Form1
 
     Private Sub btnWritePressingMinute_Click(sender As Object, e As EventArgs) Handles btnWritePressingMinute.Click
         funcs.WriteIntToPLC(Plc, 1994, 52, txtWritePressingMinute.Text)
+    End Sub
+
+    Private Sub btnReadPressingSecond_Click(sender As Object, e As EventArgs) Handles btnReadPressingSecond.Click
+        txtPressingSecond.Text = funcs.ReadIntFromPLC(Plc, 1994, 54, 2)
+    End Sub
+
+    Private Sub btnWritePressingSeconds_Click(sender As Object, e As EventArgs) Handles btnWritePressingSeconds.Click
+        funcs.WriteIntToPLC(Plc, 1994, 54, txtWritePressingSecond.Text)
+    End Sub
+
+    Private Sub btnReadBaleID_Click(sender As Object, e As EventArgs) Handles btnReadBaleID.Click
+        txtBaleID.Text = funcs.ReadDIntFromPLC(Plc, 1994, 56, 4)
+    End Sub
+
+    Private Sub btnWriteBaleID_Click(sender As Object, e As EventArgs) Handles btnWriteBaleID.Click
+        funcs.WriteDIntToPLC(Plc, 1994, 56, txtWriteBaleID.Text)
+    End Sub
+
+    Private Sub btnReadBaleNo_Click(sender As Object, e As EventArgs) Handles btnReadBaleNo.Click
+        txtBaleNo.Text = funcs.ReadDIntFromPLC(Plc, 1994, 60, 4)
+    End Sub
+
+    Private Sub btnWriteBaleNo_Click(sender As Object, e As EventArgs) Handles btnWriteBaleNo.Click
+        funcs.WriteDIntToPLC(Plc, 1994, 60, txtWriteBaleNo.Text)
+    End Sub
+
+    Private Sub btnReadLotNumber_Click(sender As Object, e As EventArgs) Handles btnReadLotNumber.Click
+        txtLotNumber.Text = funcs.ReadStringFromPLC(Plc, 1994, 68, 30)
+    End Sub
+
+    Private Sub btnReadRawMaterial_Click(sender As Object, e As EventArgs) Handles btnReadRawMaterial.Click
+        txtRawMaterial.Text = funcs.ReadStringFromPLC(Plc, 1994, 100, 30)
+    End Sub
+
+    Private Sub btnReadOrderNo_Click(sender As Object, e As EventArgs) Handles btnReadOrderNo.Click
+        txtOrderNo.Text = funcs.ReadStringFromPLC(Plc, 1994, 132, 30)
+    End Sub
+
+    Private Sub btnWriteLotNo_Click(sender As Object, e As EventArgs) Handles btnWriteLotNo.Click
+        funcs.WriteStringToPLC(Plc, 1994, 68, txtWriteLotNo.Text, 30)
+    End Sub
+
+    Private Sub btnWriteRawMaterial_Click(sender As Object, e As EventArgs) Handles btnWriteRawMaterial.Click
+        funcs.WriteStringToPLC(Plc, 1994, 100, txtWriteRawMaterial.Text, 30)
+    End Sub
+
+    Private Sub btnWriteOrderNo_Click(sender As Object, e As EventArgs) Handles btnWriteOrderNo.Click
+        funcs.WriteStringToPLC(Plc, 1994, 132, txtWriteOrderNo.Text, 30)
     End Sub
 End Class
