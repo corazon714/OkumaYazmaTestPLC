@@ -27,7 +27,7 @@ Partial Class Form1
         btnReadProduct = New Button()
         txtProduct = New TextBox()
         btnWriteProduct = New Button()
-        inputProduct = New TextBox()
+        txtWriteProduct = New TextBox()
         btnReadTest = New Button()
         btnReadBaleWeight = New Button()
         txtBaleWeight = New TextBox()
@@ -42,6 +42,24 @@ Partial Class Form1
         txtProductionCapacity = New TextBox()
         btnWriteProductionCapacity = New Button()
         txtWriteProductionCapacity = New TextBox()
+        txtReadTest = New TextBox()
+        btnReadRequest = New Button()
+        btnEstimatedBaleWeight = New Button()
+        txtEstimatedBaleWeight = New TextBox()
+        btnWriteEstimatedBaleWeight = New Button()
+        txtWriteEstimatedBaleWeight = New TextBox()
+        btnBaleWeigthingMinute = New Button()
+        txtWeightingMinute = New TextBox()
+        btnWriteWeightingBale = New Button()
+        txtWriteWeightingMinute = New TextBox()
+        btnBaleWeightingSecond = New Button()
+        txtWeightingSecond = New TextBox()
+        btnWriteWeightingSecond = New Button()
+        txtWriteWeightingSecond = New TextBox()
+        btnReadPressingMinute = New Button()
+        txtPressingMinute = New TextBox()
+        btnWritePressingMinute = New Button()
+        txtWritePressingMinute = New TextBox()
         SuspendLayout()
         ' 
         ' btnConnect
@@ -64,7 +82,7 @@ Partial Class Form1
         ' 
         ' btnReadProduct
         ' 
-        btnReadProduct.Location = New Point(12, 50)
+        btnReadProduct.Location = New Point(12, 5)
         btnReadProduct.Name = "btnReadProduct"
         btnReadProduct.Size = New Size(91, 25)
         btnReadProduct.TabIndex = 2
@@ -73,39 +91,39 @@ Partial Class Form1
         ' 
         ' txtProduct
         ' 
-        txtProduct.Location = New Point(109, 52)
+        txtProduct.Location = New Point(109, 6)
         txtProduct.Name = "txtProduct"
         txtProduct.Size = New Size(100, 23)
         txtProduct.TabIndex = 3
         ' 
         ' btnWriteProduct
         ' 
-        btnWriteProduct.Location = New Point(1009, 72)
+        btnWriteProduct.Location = New Point(1009, 5)
         btnWriteProduct.Name = "btnWriteProduct"
         btnWriteProduct.Size = New Size(91, 23)
         btnWriteProduct.TabIndex = 4
         btnWriteProduct.Text = "Write Product"
         btnWriteProduct.UseVisualStyleBackColor = True
         ' 
-        ' inputProduct
+        ' txtWriteProduct
         ' 
-        inputProduct.Location = New Point(1117, 72)
-        inputProduct.Name = "inputProduct"
-        inputProduct.Size = New Size(96, 23)
-        inputProduct.TabIndex = 5
+        txtWriteProduct.Location = New Point(1117, 5)
+        txtWriteProduct.Name = "txtWriteProduct"
+        txtWriteProduct.Size = New Size(100, 23)
+        txtWriteProduct.TabIndex = 5
         ' 
         ' btnReadTest
         ' 
-        btnReadTest.Location = New Point(557, 70)
+        btnReadTest.Location = New Point(517, 70)
         btnReadTest.Name = "btnReadTest"
-        btnReadTest.Size = New Size(112, 34)
+        btnReadTest.Size = New Size(91, 43)
         btnReadTest.TabIndex = 6
-        btnReadTest.Text = "ReadTest"
+        btnReadTest.Text = "Toggle Read Request"
         btnReadTest.UseVisualStyleBackColor = True
         ' 
         ' btnReadBaleWeight
         ' 
-        btnReadBaleWeight.Location = New Point(12, 5)
+        btnReadBaleWeight.Location = New Point(12, 36)
         btnReadBaleWeight.Name = "btnReadBaleWeight"
         btnReadBaleWeight.Size = New Size(91, 39)
         btnReadBaleWeight.TabIndex = 7
@@ -114,14 +132,14 @@ Partial Class Form1
         ' 
         ' txtBaleWeight
         ' 
-        txtBaleWeight.Location = New Point(109, 12)
+        txtBaleWeight.Location = New Point(109, 45)
         txtBaleWeight.Name = "txtBaleWeight"
         txtBaleWeight.Size = New Size(100, 23)
         txtBaleWeight.TabIndex = 8
         ' 
         ' btnWriteBaleWeight
         ' 
-        btnWriteBaleWeight.Location = New Point(1009, 101)
+        btnWriteBaleWeight.Location = New Point(1009, 34)
         btnWriteBaleWeight.Name = "btnWriteBaleWeight"
         btnWriteBaleWeight.Size = New Size(91, 39)
         btnWriteBaleWeight.TabIndex = 9
@@ -130,14 +148,14 @@ Partial Class Form1
         ' 
         ' txtWriteBaleWeight
         ' 
-        txtWriteBaleWeight.Location = New Point(1117, 110)
+        txtWriteBaleWeight.Location = New Point(1117, 41)
         txtWriteBaleWeight.Name = "txtWriteBaleWeight"
         txtWriteBaleWeight.Size = New Size(100, 23)
         txtWriteBaleWeight.TabIndex = 10
         ' 
         ' btnReadPressInfo
         ' 
-        btnReadPressInfo.Location = New Point(12, 86)
+        btnReadPressInfo.Location = New Point(12, 81)
         btnReadPressInfo.Name = "btnReadPressInfo"
         btnReadPressInfo.Size = New Size(91, 39)
         btnReadPressInfo.TabIndex = 11
@@ -146,14 +164,14 @@ Partial Class Form1
         ' 
         ' txtPressInfo
         ' 
-        txtPressInfo.Location = New Point(109, 95)
+        txtPressInfo.Location = New Point(109, 90)
         txtPressInfo.Name = "txtPressInfo"
         txtPressInfo.Size = New Size(100, 23)
         txtPressInfo.TabIndex = 12
         ' 
         ' btnWritePressInfo
         ' 
-        btnWritePressInfo.Location = New Point(1009, 146)
+        btnWritePressInfo.Location = New Point(1009, 79)
         btnWritePressInfo.Name = "btnWritePressInfo"
         btnWritePressInfo.Size = New Size(91, 39)
         btnWritePressInfo.TabIndex = 13
@@ -162,14 +180,14 @@ Partial Class Form1
         ' 
         ' txtWritePressInfo
         ' 
-        txtWritePressInfo.Location = New Point(1117, 155)
+        txtWritePressInfo.Location = New Point(1117, 86)
         txtWritePressInfo.Name = "txtWritePressInfo"
         txtWritePressInfo.Size = New Size(100, 23)
         txtWritePressInfo.TabIndex = 14
         ' 
         ' btnReadProductionCapacity
         ' 
-        btnReadProductionCapacity.Location = New Point(12, 132)
+        btnReadProductionCapacity.Location = New Point(12, 126)
         btnReadProductionCapacity.Name = "btnReadProductionCapacity"
         btnReadProductionCapacity.Size = New Size(91, 53)
         btnReadProductionCapacity.TabIndex = 15
@@ -178,14 +196,14 @@ Partial Class Form1
         ' 
         ' txtProductionCapacity
         ' 
-        txtProductionCapacity.Location = New Point(109, 148)
+        txtProductionCapacity.Location = New Point(109, 142)
         txtProductionCapacity.Name = "txtProductionCapacity"
         txtProductionCapacity.Size = New Size(100, 23)
         txtProductionCapacity.TabIndex = 16
         ' 
         ' btnWriteProductionCapacity
         ' 
-        btnWriteProductionCapacity.Location = New Point(1009, 191)
+        btnWriteProductionCapacity.Location = New Point(1009, 124)
         btnWriteProductionCapacity.Name = "btnWriteProductionCapacity"
         btnWriteProductionCapacity.Size = New Size(91, 58)
         btnWriteProductionCapacity.TabIndex = 17
@@ -194,16 +212,178 @@ Partial Class Form1
         ' 
         ' txtWriteProductionCapacity
         ' 
-        txtWriteProductionCapacity.Location = New Point(1117, 210)
+        txtWriteProductionCapacity.Location = New Point(1117, 143)
         txtWriteProductionCapacity.Name = "txtWriteProductionCapacity"
         txtWriteProductionCapacity.Size = New Size(100, 23)
         txtWriteProductionCapacity.TabIndex = 18
+        ' 
+        ' txtReadTest
+        ' 
+        txtReadTest.Location = New Point(550, 119)
+        txtReadTest.Name = "txtReadTest"
+        txtReadTest.Size = New Size(112, 23)
+        txtReadTest.TabIndex = 19
+        ' 
+        ' btnReadRequest
+        ' 
+        btnReadRequest.Location = New Point(614, 68)
+        btnReadRequest.Name = "btnReadRequest"
+        btnReadRequest.Size = New Size(96, 43)
+        btnReadRequest.TabIndex = 20
+        btnReadRequest.Text = "Read Request"
+        btnReadRequest.UseVisualStyleBackColor = True
+        ' 
+        ' btnEstimatedBaleWeight
+        ' 
+        btnEstimatedBaleWeight.Location = New Point(12, 185)
+        btnEstimatedBaleWeight.Name = "btnEstimatedBaleWeight"
+        btnEstimatedBaleWeight.Size = New Size(91, 53)
+        btnEstimatedBaleWeight.TabIndex = 21
+        btnEstimatedBaleWeight.Text = "Read Estimated Bale Weight"
+        btnEstimatedBaleWeight.UseVisualStyleBackColor = True
+        ' 
+        ' txtEstimatedBaleWeight
+        ' 
+        txtEstimatedBaleWeight.Location = New Point(109, 201)
+        txtEstimatedBaleWeight.Name = "txtEstimatedBaleWeight"
+        txtEstimatedBaleWeight.Size = New Size(100, 23)
+        txtEstimatedBaleWeight.TabIndex = 22
+        ' 
+        ' btnWriteEstimatedBaleWeight
+        ' 
+        btnWriteEstimatedBaleWeight.Location = New Point(1009, 188)
+        btnWriteEstimatedBaleWeight.Name = "btnWriteEstimatedBaleWeight"
+        btnWriteEstimatedBaleWeight.Size = New Size(91, 53)
+        btnWriteEstimatedBaleWeight.TabIndex = 23
+        btnWriteEstimatedBaleWeight.Text = "Write Estimated Bale Weight"
+        btnWriteEstimatedBaleWeight.UseVisualStyleBackColor = True
+        ' 
+        ' txtWriteEstimatedBaleWeight
+        ' 
+        txtWriteEstimatedBaleWeight.Location = New Point(1117, 201)
+        txtWriteEstimatedBaleWeight.Name = "txtWriteEstimatedBaleWeight"
+        txtWriteEstimatedBaleWeight.Size = New Size(100, 23)
+        txtWriteEstimatedBaleWeight.TabIndex = 24
+        ' 
+        ' btnBaleWeigthingMinute
+        ' 
+        btnBaleWeigthingMinute.Location = New Point(12, 244)
+        btnBaleWeigthingMinute.Name = "btnBaleWeigthingMinute"
+        btnBaleWeigthingMinute.Size = New Size(91, 53)
+        btnBaleWeigthingMinute.TabIndex = 25
+        btnBaleWeigthingMinute.Text = "Read Minute for Bale Weight"
+        btnBaleWeigthingMinute.UseVisualStyleBackColor = True
+        ' 
+        ' txtWeightingMinute
+        ' 
+        txtWeightingMinute.Location = New Point(109, 260)
+        txtWeightingMinute.Name = "txtWeightingMinute"
+        txtWeightingMinute.Size = New Size(100, 23)
+        txtWeightingMinute.TabIndex = 26
+        ' 
+        ' btnWriteWeightingBale
+        ' 
+        btnWriteWeightingBale.Location = New Point(1009, 247)
+        btnWriteWeightingBale.Name = "btnWriteWeightingBale"
+        btnWriteWeightingBale.Size = New Size(91, 53)
+        btnWriteWeightingBale.TabIndex = 27
+        btnWriteWeightingBale.Text = "Write Minute for Bale Weight"
+        btnWriteWeightingBale.UseVisualStyleBackColor = True
+        ' 
+        ' txtWriteWeightingMinute
+        ' 
+        txtWriteWeightingMinute.Location = New Point(1117, 263)
+        txtWriteWeightingMinute.Name = "txtWriteWeightingMinute"
+        txtWriteWeightingMinute.Size = New Size(100, 23)
+        txtWriteWeightingMinute.TabIndex = 28
+        ' 
+        ' btnBaleWeightingSecond
+        ' 
+        btnBaleWeightingSecond.Location = New Point(12, 303)
+        btnBaleWeightingSecond.Name = "btnBaleWeightingSecond"
+        btnBaleWeightingSecond.Size = New Size(91, 53)
+        btnBaleWeightingSecond.TabIndex = 29
+        btnBaleWeightingSecond.Text = "Read Seconds for Bale Weight"
+        btnBaleWeightingSecond.UseVisualStyleBackColor = True
+        ' 
+        ' txtWeightingSecond
+        ' 
+        txtWeightingSecond.Location = New Point(109, 319)
+        txtWeightingSecond.Name = "txtWeightingSecond"
+        txtWeightingSecond.Size = New Size(100, 23)
+        txtWeightingSecond.TabIndex = 30
+        ' 
+        ' btnWriteWeightingSecond
+        ' 
+        btnWriteWeightingSecond.Location = New Point(1009, 306)
+        btnWriteWeightingSecond.Name = "btnWriteWeightingSecond"
+        btnWriteWeightingSecond.Size = New Size(91, 53)
+        btnWriteWeightingSecond.TabIndex = 31
+        btnWriteWeightingSecond.Text = "Write Seconds for Bale Weight"
+        btnWriteWeightingSecond.UseVisualStyleBackColor = True
+        ' 
+        ' txtWriteWeightingSecond
+        ' 
+        txtWriteWeightingSecond.Location = New Point(1117, 322)
+        txtWriteWeightingSecond.Name = "txtWriteWeightingSecond"
+        txtWriteWeightingSecond.Size = New Size(100, 23)
+        txtWriteWeightingSecond.TabIndex = 32
+        ' 
+        ' btnReadPressingMinute
+        ' 
+        btnReadPressingMinute.Location = New Point(12, 362)
+        btnReadPressingMinute.Name = "btnReadPressingMinute"
+        btnReadPressingMinute.Size = New Size(91, 53)
+        btnReadPressingMinute.TabIndex = 33
+        btnReadPressingMinute.Text = "Read Minutes for Bale Pressing"
+        btnReadPressingMinute.UseVisualStyleBackColor = True
+        ' 
+        ' txtPressingMinute
+        ' 
+        txtPressingMinute.Location = New Point(109, 378)
+        txtPressingMinute.Name = "txtPressingMinute"
+        txtPressingMinute.Size = New Size(100, 23)
+        txtPressingMinute.TabIndex = 34
+        ' 
+        ' btnWritePressingMinute
+        ' 
+        btnWritePressingMinute.Location = New Point(1009, 365)
+        btnWritePressingMinute.Name = "btnWritePressingMinute"
+        btnWritePressingMinute.Size = New Size(91, 53)
+        btnWritePressingMinute.TabIndex = 35
+        btnWritePressingMinute.Text = "Write Minutes for Bale Pressing"
+        btnWritePressingMinute.UseVisualStyleBackColor = True
+        ' 
+        ' txtWritePressingMinute
+        ' 
+        txtWritePressingMinute.Location = New Point(1117, 378)
+        txtWritePressingMinute.Name = "txtWritePressingMinute"
+        txtWritePressingMinute.Size = New Size(100, 23)
+        txtWritePressingMinute.TabIndex = 36
         ' 
         ' Form1
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
         ClientSize = New Size(1225, 479)
+        Controls.Add(txtWritePressingMinute)
+        Controls.Add(btnWritePressingMinute)
+        Controls.Add(txtPressingMinute)
+        Controls.Add(btnReadPressingMinute)
+        Controls.Add(txtWriteWeightingSecond)
+        Controls.Add(btnWriteWeightingSecond)
+        Controls.Add(txtWeightingSecond)
+        Controls.Add(btnBaleWeightingSecond)
+        Controls.Add(txtWriteWeightingMinute)
+        Controls.Add(btnWriteWeightingBale)
+        Controls.Add(txtWeightingMinute)
+        Controls.Add(btnBaleWeigthingMinute)
+        Controls.Add(txtWriteEstimatedBaleWeight)
+        Controls.Add(btnWriteEstimatedBaleWeight)
+        Controls.Add(txtEstimatedBaleWeight)
+        Controls.Add(btnEstimatedBaleWeight)
+        Controls.Add(btnReadRequest)
+        Controls.Add(txtReadTest)
         Controls.Add(txtWriteProductionCapacity)
         Controls.Add(btnWriteProductionCapacity)
         Controls.Add(txtProductionCapacity)
@@ -217,7 +397,7 @@ Partial Class Form1
         Controls.Add(txtBaleWeight)
         Controls.Add(btnReadBaleWeight)
         Controls.Add(btnReadTest)
-        Controls.Add(inputProduct)
+        Controls.Add(txtWriteProduct)
         Controls.Add(btnWriteProduct)
         Controls.Add(txtProduct)
         Controls.Add(btnReadProduct)
@@ -234,7 +414,7 @@ Partial Class Form1
     Friend WithEvents btnReadProduct As Button
     Friend WithEvents txtProduct As TextBox
     Friend WithEvents btnWriteProduct As Button
-    Friend WithEvents inputProduct As TextBox
+    Friend WithEvents txtWriteProduct As TextBox
     Friend WithEvents btnReadTest As Button
     Friend WithEvents btnReadBaleWeight As Button
     Friend WithEvents txtBaleWeight As TextBox
@@ -249,4 +429,22 @@ Partial Class Form1
     Friend WithEvents txtProductionCapacity As TextBox
     Friend WithEvents btnWriteProductionCapacity As Button
     Friend WithEvents txtWriteProductionCapacity As TextBox
+    Friend WithEvents txtReadTest As TextBox
+    Friend WithEvents btnReadRequest As Button
+    Friend WithEvents btnEstimatedBaleWeight As Button
+    Friend WithEvents txtEstimatedBaleWeight As TextBox
+    Friend WithEvents btnWriteEstimatedBaleWeight As Button
+    Friend WithEvents txtWriteEstimatedBaleWeight As TextBox
+    Friend WithEvents btnBaleWeigthingMinute As Button
+    Friend WithEvents txtWeightingMinute As TextBox
+    Friend WithEvents btnWriteWeightingBale As Button
+    Friend WithEvents txtWriteWeightingMinute As TextBox
+    Friend WithEvents btnBaleWeightingSecond As Button
+    Friend WithEvents txtWeightingSecond As TextBox
+    Friend WithEvents btnWriteWeightingSecond As Button
+    Friend WithEvents txtWriteWeightingSecond As TextBox
+    Friend WithEvents btnReadPressingMinute As Button
+    Friend WithEvents txtPressingMinute As TextBox
+    Friend WithEvents btnWritePressingMinute As Button
+    Friend WithEvents txtWritePressingMinute As TextBox
 End Class
