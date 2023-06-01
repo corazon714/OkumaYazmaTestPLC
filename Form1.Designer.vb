@@ -22,6 +22,7 @@ Partial Class Form1
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
+        components = New ComponentModel.Container()
         btnConnect = New Button()
         btnDisconnet = New Button()
         btnReadProduct = New Button()
@@ -84,11 +85,14 @@ Partial Class Form1
         txtWriteRawMaterial = New TextBox()
         btnWriteOrderNo = New Button()
         txtWriteOrderNo = New TextBox()
+        connectionTimer = New Timer(components)
+        lblConnectionStatus = New Label()
+        lblPingStatus = New Label()
         SuspendLayout()
         ' 
         ' btnConnect
         ' 
-        btnConnect.Location = New Point(517, 10)
+        btnConnect.Location = New Point(517, 30)
         btnConnect.Name = "btnConnect"
         btnConnect.Size = New Size(91, 54)
         btnConnect.TabIndex = 0
@@ -97,7 +101,7 @@ Partial Class Form1
         ' 
         ' btnDisconnet
         ' 
-        btnDisconnet.Location = New Point(614, 10)
+        btnDisconnet.Location = New Point(614, 32)
         btnDisconnet.Name = "btnDisconnet"
         btnDisconnet.Size = New Size(96, 52)
         btnDisconnet.TabIndex = 1
@@ -138,7 +142,7 @@ Partial Class Form1
         ' 
         ' btnReadTest
         ' 
-        btnReadTest.Location = New Point(517, 70)
+        btnReadTest.Location = New Point(517, 90)
         btnReadTest.Name = "btnReadTest"
         btnReadTest.Size = New Size(91, 43)
         btnReadTest.TabIndex = 6
@@ -176,9 +180,6 @@ Partial Class Form1
         txtWriteBaleWeight.Name = "txtWriteBaleWeight"
         txtWriteBaleWeight.Size = New Size(100, 23)
         txtWriteBaleWeight.TabIndex = 10
-        ' 
-        ' BackgroundWorker1
-        ' 
         ' 
         ' btnReadPressInfo
         ' 
@@ -246,14 +247,14 @@ Partial Class Form1
         ' 
         ' txtReadTest
         ' 
-        txtReadTest.Location = New Point(550, 119)
+        txtReadTest.Location = New Point(556, 139)
         txtReadTest.Name = "txtReadTest"
         txtReadTest.Size = New Size(112, 23)
         txtReadTest.TabIndex = 19
         ' 
         ' btnReadRequest
         ' 
-        btnReadRequest.Location = New Point(614, 68)
+        btnReadRequest.Location = New Point(614, 90)
         btnReadRequest.Name = "btnReadRequest"
         btnReadRequest.Size = New Size(96, 43)
         btnReadRequest.TabIndex = 20
@@ -580,11 +581,35 @@ Partial Class Form1
         txtWriteOrderNo.Size = New Size(100, 23)
         txtWriteOrderNo.TabIndex = 60
         ' 
+        ' connectionTimer
+        ' 
+        connectionTimer.Interval = 550
+        ' 
+        ' lblConnectionStatus
+        ' 
+        lblConnectionStatus.AutoSize = True
+        lblConnectionStatus.Location = New Point(614, 5)
+        lblConnectionStatus.Name = "lblConnectionStatus"
+        lblConnectionStatus.Size = New Size(41, 15)
+        lblConnectionStatus.TabIndex = 62
+        lblConnectionStatus.Text = "Label1"
+        ' 
+        ' lblPingStatus
+        ' 
+        lblPingStatus.AutoSize = True
+        lblPingStatus.Location = New Point(517, 5)
+        lblPingStatus.Name = "lblPingStatus"
+        lblPingStatus.Size = New Size(41, 15)
+        lblPingStatus.TabIndex = 63
+        lblPingStatus.Text = "Label1"
+        ' 
         ' Form1
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
-        ClientSize = New Size(1225, 479)
+        ClientSize = New Size(1225, 530)
+        Controls.Add(lblPingStatus)
+        Controls.Add(lblConnectionStatus)
         Controls.Add(txtWriteOrderNo)
         Controls.Add(btnWriteOrderNo)
         Controls.Add(txtWriteRawMaterial)
@@ -714,4 +739,7 @@ Partial Class Form1
     Friend WithEvents txtWriteRawMaterial As TextBox
     Friend WithEvents btnWriteOrderNo As Button
     Friend WithEvents txtWriteOrderNo As TextBox
+    Friend WithEvents connectionTimer As Timer
+    Friend WithEvents lblConnectionStatus As Label
+    Friend WithEvents lblPingStatus As Label
 End Class

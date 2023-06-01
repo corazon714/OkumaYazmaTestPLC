@@ -1,40 +1,72 @@
 ﻿Imports System.Text
 Imports System.Threading
+Imports System.Windows.Forms.VisualStyles.VisualStyleElement
 Imports S7.Net
 Imports S7.Net.Types
-Imports functions = OkumaYazmaTestPLC.functions
+Imports functions = OkumaYazmaTestPLC.Functions
+Imports variables = OkumaYazmaTestPLC.Variables
 
 
 Public Class Form1
+    Dim funcs As New Functions()
+
     Private Plc As Plc
-    Dim funcs As New functions()
+
+    Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        ' Connect to PLC at the desired IP address '
+        Plc = New Plc(CpuType.S71200, plcAdress, 0, 1)
+
+        'setting timer for connection '
+        connectionTimer.Interval = 550
+        connectionTimer.Start()
+
+        ' Open the connection to the PLC '
+        If Functions.PingIpAddress(plcAdress) Then
+            Try
+                Plc.Open()
+            Catch ex As Exception
+                MessageBox.Show("Cannot connect to PLC at " + plcAdress)
+            End Try
+        Else
+            MessageBox.Show("Cannot connect to PLC at " + plcAdress)
+        End If
+    End Sub
+
 
     Private Sub btnConnect_Click(sender As Object, e As EventArgs) Handles btnConnect.Click
         ' Connect to PLC at 192.168.10.215 using S7.Net '
-        Plc = New Plc(CpuType.S71200, "192.168.10.215", 0, 1)
-        Try
-            Plc.Open()
-        Catch ex As Exception
-            MessageBox.Show("192.168.10.215 üzerindeki SIEMENS PLC'ye Bağlanılamıyor.")
-        End Try
-        If Plc.IsConnected Then
-            MessageBox.Show("Connected to PLC")
+        Plc = New Plc(CpuType.S71200, plcAdress, 0, 1)
+        If Functions.PingIpAddress(plcAdress) Then
+            Try
+                Plc.Open()
+                If Plc.IsConnected Then
+                    MessageBox.Show("Connected to PLC")
+                Else
+                    MessageBox.Show("Cannot connect to PLC")
+                End If
+            Catch ex As Exception
+                MessageBox.Show("Cannot connect to PLC at " + plcAdress)
+            End Try
         Else
-            MessageBox.Show("Cannot connect to PLC")
+            MessageBox.Show("Cannot connect to PLC at " + plcAdress)
         End If
     End Sub
 
     Private Sub btnDisconnet_Click(sender As Object, e As EventArgs) Handles btnDisconnet.Click
         'disconnect from PLC '
-        If Plc IsNot Nothing AndAlso Plc.IsConnected Then
-            Plc.Close()
-            If Plc.IsConnected Then
-                MessageBox.Show("Cannot disconnect from PLC")
-            Else
-                MessageBox.Show("Disconnected from PLC")
-            End If
+        If Functions.PingIpAddress(plcAdress) AndAlso Plc IsNot Nothing Then
+            Try
+                Plc.Close()
+                If Plc.IsConnected Then
+                    MessageBox.Show("Cannot disconnect from PLC")
+                Else
+                    MessageBox.Show("Disconnected from PLC")
+                End If
+            Catch ex As Exception
+                MessageBox.Show("Cannot disconnect from PLC at " + plcAdress)
+            End Try
         Else
-            MessageBox.Show("Allready disconnected from PLC")
+            MessageBox.Show("There is no response or you are not connected to PLC at " + plcAdress)
         End If
     End Sub
 
@@ -164,5 +196,65 @@ Public Class Form1
 
     Private Sub btnWriteOrderNo_Click(sender As Object, e As EventArgs) Handles btnWriteOrderNo.Click
         funcs.WriteStringToPLC(Plc, 1994, 132, txtWriteOrderNo.Text, 30)
+
+    End Sub
+
+    Private Sub connectionTimer_Tick(sender As Object, e As EventArgs) Handles connectionTimer.Tick
+        If Functions.PingIpAddress(plcAdress) Then
+            ' PLC is reachable
+            lblPingStatus.Text = "Reachable"
+            ' Check the connection status
+            If Plc IsNot Nothing AndAlso Plc.IsConnected Then
+                ' Connected to PLC
+                lblConnectionStatus.Text = "Connected"
+                ' Loop through the PlcDataItems
+                For Each item As PlcDataItem In plcDataItems
+                    Dim name As String = item.Name
+                    Dim type As String = item.Type
+                    Dim dbNumber As Integer = item.DbNumber
+                    Dim startByteAddress As Integer = item.StartByteAddress
+                    Dim byteCount As Integer = item.ByteCount
+                    Dim textBoxName As String = item.TextBoxName
+
+                    ' Find the TextBox control by its name
+                    Dim textBox As System.Windows.Forms.TextBox = Functions.FindControl(Me, textBoxName)
+
+                    If textBox IsNot Nothing Then
+                        ' Read the value from the PLC based on the data type
+                        Select Case type
+                            Case "String"
+                                Dim value As String = funcs.ReadStringFromPLC(Plc, dbNumber, startByteAddress, byteCount)
+                                textBox.Text = value
+                            Case "Boolean"
+                                Dim value As Boolean = funcs.ReadBooleanFromPLC(Plc, dbNumber, startByteAddress)
+                                textBox.Text = value.ToString()
+                            Case "Int"
+                                Dim value As Integer = funcs.ReadIntFromPLC(Plc, dbNumber, startByteAddress, byteCount)
+                                textBox.Text = value.ToString()
+                            Case "DInt"
+                                Dim value As Integer = funcs.ReadDIntFromPLC(Plc, dbNumber, startByteAddress, byteCount)
+                                textBox.Text = value.ToString()
+                            Case "Word"
+                                Dim value As Integer = funcs.ReadWordFromPLC(Plc, dbNumber, startByteAddress, byteCount)
+                                textBox.Text = value.ToString()
+                            Case "Real"
+                                Dim value As Double = funcs.ReadRealFromPLC(Plc, dbNumber, startByteAddress, byteCount)
+                                textBox.Text = value.ToString()
+                            Case Else
+                                MessageBox.Show($"Unknown data type '{type}'")
+                        End Select
+                    Else
+                        MessageBox.Show($"TextBox control '{textBoxName}' not found.")
+                    End If
+                Next
+            Else
+                ' Not connected to PLC
+                lblConnectionStatus.Text = "Disconnected"
+            End If
+        Else
+            ' PLC is not reachable
+            lblPingStatus.Text = "Not reachable"
+            lblConnectionStatus.Text = "Disconnected"
+        End If
     End Sub
 End Class
