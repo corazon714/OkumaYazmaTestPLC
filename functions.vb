@@ -3,395 +3,488 @@ Imports S7.Net
 Imports S7.Net.Types
 Imports System.Net.NetworkInformation
 Imports variables = OkumaYazmaTestPLC.Variables
+Imports System
 
 
 Public Class Functions
-    'GENERAL FUNCTIONS START'
+    'GENEL FONKSİYONLAR BAŞLANGIÇ'
 
-    'This function tests the connection to the PLC with ping'
-    Public Shared Function PingIpAddress(ipAddress As String) As Boolean
+    'BU FONKSİYON AĞA PİNG GÖNDEREREK PLC ADRESİNİN DOĞRULUĞUNU KONTROL EDER'
+    Public Shared Async Function PingIpAddress(ipAddress As String) As Task(Of Boolean)
         Try
             Dim pingSender As New Ping()
-            Dim reply As PingReply = pingSender.Send(ipAddress, 500) ' Set the timeout to 500ms
+            Dim reply As PingReply = Await pingSender.SendPingAsync(ipAddress, 500) ' Set the timeout to 500ms
 
             If reply.Status = IPStatus.Success Then
+                Variables.pingResponse = True
+                'OkumaYazmaTestPLC.Form1.pingStatus.Text = "PLC'ye Ulaşılabilir."
                 Return True
             Else
+                Variables.pingResponse = False
+                OkumaYazmaTestPLC.Form1.pingStatus.Text = "PLC Ulaşılabilir durumda değil. IP: " + plcAdress
                 Return False
             End If
         Catch ex As Exception
+            Variables.pingResponse = False
+            OkumaYazmaTestPLC.Form1.pingStatus.Text = "PLC Ulaşılabilir durumda değil. IP: " + plcAdress
             Return False
         End Try
     End Function
 
+    'BU FONKSİYON variables.vb DOSYASINDAKİ DATA DİZİSİNE GÖRE UYGUN TEXTBOX'I BULUR'
     Public Shared Function FindControl(form As Form, name As String) As TextBox
-        Dim control As Control = form.Controls.Find(name, True).FirstOrDefault()
-        Return If(TypeOf control Is TextBox, DirectCast(control, TextBox), Nothing)
+        Dim control As Control = form.Controls.Find(name, True).OfType(Of TextBox)().FirstOrDefault()
+        Return control
     End Function
 
-    'GENERAL FUNCTIONS END'
 
-    'TOGGLE FUNCTIONS START'
+    'GENEL FONKSİYONLAR BİTİŞ'
 
-    'This function toggles the value of the bit in the PLC as TRUE if it is FALSE or FALSE if it is TRUE'
-    Public Sub ToggleValueInPLC(plc As Plc, db As Integer, offset As Integer)
-        If PingIpAddress(plcAdress) AndAlso plc IsNot Nothing Then
-            If plc.IsConnected Then
+    'BOOLEAN FONKSİYONLARI'
 
-                Dim dbNumber As Integer = CInt(db)
-                Dim startByteAdr As Integer = CInt(offset)
+    'BU FONKSİYON DEĞERİ TRUE İSE FALSE FALSE İSE TRUE YAPAR'
+    Public Sub ToggleBoolValueInPLC(plc As Plc, db As Integer, offset As Double)
+        If Variables.pingResponse AndAlso plc IsNot Nothing AndAlso plc.IsConnected Then
+            OkumaYazmaTestPLC.Form1.pingStatus.Text = "PLC Bağlı"
+            Dim dbNumber As Integer = db
+            Dim startByteAdr As Integer = CInt(Math.Floor(offset))
+            Dim bitIndex As Integer = CInt((offset - startByteAdr) * 10) ' Calculate the bit index within the byte
 
+            Try
                 ' Read the byte containing the bit value '
                 Dim rawData As Byte() = plc.ReadBytes(DataType.DataBlock, dbNumber, startByteAdr, 1)
-                Dim currentValue As Boolean = (rawData(0) And &H1) <> 0
+                Dim bitMask As Byte = CByte(1 << bitIndex) ' Create the bit mask for the specific bit
 
-                ' Toggle the value and write it back to the PLC '
-                Dim newValue As Boolean = Not currentValue
-                If newValue Then
-                    rawData(0) = rawData(0) Or &H1
-                Else
-                    rawData(0) = rawData(0) And Not &H1
-                End If
+                rawData(0) = rawData(0) Xor bitMask ' Toggle the bit value
                 plc.WriteBytes(DataType.DataBlock, dbNumber, startByteAdr, rawData)
+                OkumaYazmaTestPLC.Form1.lastJobContext.Text = "Değer başarıyla değiştirildi."
+            Catch ex As Exception
+                ' Handle the exception or display an error message
+                MessageBox.Show("Değer değişimi sırasında hata: " + ex.Message)
+                OkumaYazmaTestPLC.Form1.lastJobContext.Text = "Değer değiştirme hatası"
+            End Try
 
-                MessageBox.Show("Value toggled successfully")
-            Else
-                MessageBox.Show("Not connected to PLC")
-            End If
         Else
-            MessageBox.Show("Plc is not responding or not connected at " + plcAdress)
-        End If
-    End Sub
-
-    'This turnes the value to TRUE'
-    Public Sub SetBoolValueToTrueInPLC(plc As Plc, db As Integer, offset As Integer)
-        If PingIpAddress(plcAdress) AndAlso plc IsNot Nothing Then
-            If plc.IsConnected Then
-                Dim dbNumber As Integer = CInt(db)
-                Dim startByteAdr As Integer = CInt(offset)
-
-                ' Read the byte containing the bit value '
-                Dim rawData As Byte() = plc.ReadBytes(DataType.DataBlock, dbNumber, startByteAdr, 1)
-                rawData(0) = rawData(0) Or &H1 ' Set the bit value to 1
-                plc.WriteBytes(DataType.DataBlock, dbNumber, startByteAdr, rawData)
-
-                MessageBox.Show("Value set to True in PLC successfully")
-            Else
-                MessageBox.Show("Not connected to PLC")
-            End If
-        Else
-            MessageBox.Show("Plc is not responding or not connected at " + plcAdress)
-        End If
-    End Sub
-
-    'This turnes the value to FALSE'
-    Public Sub SetBoolValueToFalseInPLC(plc As Plc, db As Integer, offset As Integer)
-        If PingIpAddress(plcAdress) AndAlso plc IsNot Nothing Then
-            If plc.IsConnected Then
-                Dim dbNumber As Integer = CInt(db)
-                Dim startByteAdr As Integer = CInt(offset)
-
-                ' Read the byte containing the bit value '
-                Dim rawData As Byte() = plc.ReadBytes(DataType.DataBlock, dbNumber, startByteAdr, 1)
-                rawData(0) = rawData(0) And Not &H1 ' Set the bit value to 0
-                plc.WriteBytes(DataType.DataBlock, dbNumber, startByteAdr, rawData)
-
-                MessageBox.Show("Value set to False in PLC successfully")
-            Else
-                MessageBox.Show("Not connected to PLC")
-            End If
-        Else
-            MessageBox.Show("Plc is not responding or not connected at " + plcAdress)
+            OkumaYazmaTestPLC.Form1.lastJobContext.Text = "İşlem Başarısız"
+            OkumaYazmaTestPLC.Form1.pingStatus.Text = "PLC Ulaşılabilir durumda değil. IP: " + plcAdress
         End If
     End Sub
 
 
-    'TOGGLE FUNCTIONS END'
+
+
+    'BU FONKSİYON DEĞERİ TRUE YAPAR'
+    Public Sub SetBoolValueToTrueInPLC(plc As Plc, db As Integer, offset As Double)
+        If Variables.pingResponse AndAlso plc IsNot Nothing AndAlso plc.IsConnected Then
+            OkumaYazmaTestPLC.Form1.pingStatus.Text = "PLC Bağlı"
+            Dim dbNumber As Integer = db
+            Dim startByteAdr As Integer = CInt(Math.Floor(offset))
+            Dim bitIndex As Integer = CInt((offset - startByteAdr) * 10) ' Calculate the bit index within the byte
+
+            Try
+                ' Read the byte containing the bit value '
+                Dim rawData As Byte() = plc.ReadBytes(DataType.DataBlock, dbNumber, startByteAdr, 1)
+                Dim bitMask As Byte = CByte(1 << bitIndex) ' Create the bit mask for the specific bit
+
+                rawData(0) = rawData(0) Or bitMask ' Set the bit value to 1
+                plc.WriteBytes(DataType.DataBlock, dbNumber, startByteAdr, rawData)
+                OkumaYazmaTestPLC.Form1.lastJobContext.Text = "Değer başarıyla değiştirildi."
+            Catch ex As Exception
+                ' Handle the exception or display an error message
+                MessageBox.Show("Değer değişimi sırasında hata: " + ex.Message)
+                OkumaYazmaTestPLC.Form1.lastJobContext.Text = "Değer değiştirme hatası"
+            End Try
+
+        Else
+            OkumaYazmaTestPLC.Form1.lastJobContext.Text = "İşlem Başarısız"
+            OkumaYazmaTestPLC.Form1.pingStatus.Text = "PLC Ulaşılabilir durumda değil. IP: " + plcAdress
+        End If
+    End Sub
+
+
+    'BU FONKSİYON DEĞERİ FALSE YAPAR'
+    Public Sub SetBoolValueToFalseInPLC(plc As Plc, db As Integer, offset As Double)
+        If Variables.pingResponse AndAlso plc IsNot Nothing AndAlso plc.IsConnected Then
+            OkumaYazmaTestPLC.Form1.pingStatus.Text = "PLC Bağlı"
+            Dim dbNumber As Integer = db
+            Dim startByteAdr As Integer = CInt(Math.Floor(offset))
+            Dim bitIndex As Integer = CInt((offset - startByteAdr) * 10) ' Calculate the bit index within the byte
+
+            Try
+                ' Read the byte containing the bit value '
+                Dim rawData As Byte() = plc.ReadBytes(DataType.DataBlock, dbNumber, startByteAdr, 1)
+                Dim bitMask As Byte = CByte(1 << bitIndex) ' Create the bit mask for the specific bit
+
+                rawData(0) = rawData(0) And Not bitMask ' Set the bit value to 0
+                plc.WriteBytes(DataType.DataBlock, dbNumber, startByteAdr, rawData)
+                OkumaYazmaTestPLC.Form1.lastJobContext.Text = "Değer başarıyla değiştirildi."
+            Catch ex As Exception
+                ' Handle the exception or display an error message
+                MessageBox.Show("Değer değişimi sırasında hata: " + ex.Message)
+                OkumaYazmaTestPLC.Form1.lastJobContext.Text = "Değer değiştirme hatası"
+            End Try
+
+        Else
+            OkumaYazmaTestPLC.Form1.lastJobContext.Text = "İşlem Başarısız"
+            OkumaYazmaTestPLC.Form1.pingStatus.Text = "PLC Ulaşılabilir durumda değil. IP: " + plcAdress
+        End If
+    End Sub
+    'BOOLEAN FONKSİYONLARI BİTİŞ'
 
     '---------------------------------------------------------------------------------------------------------------------------------------'
 
-    'READ FUNCTIONS START'
+    'DEĞER OKUMA FONKSİYONLARI'
 
-    'This function reads the WORD value in the PLC'
-    Public Function ReadWordFromPLC(plc As Plc, db As Integer, offset As Double, count As Integer)
-        Dim resultText As String = String.Empty
+    'BU FONKSİYON PLC'DEN WORD DEĞERLERİ OKUR'
+    Public Function ReadWordFromPLC(plc As Plc, db As Integer, offset As Integer, count As Integer) As Integer
+        If Variables.pingResponse AndAlso plc IsNot Nothing AndAlso plc.IsConnected Then
+            OkumaYazmaTestPLC.Form1.pingStatus.Text = "PLC Bağlı"
+            Dim dbNumber As Integer = db
+            Dim startByteAdr As Integer = offset
+            Dim byteCount As Integer = count
 
-        If PingIpAddress(plcAdress) AndAlso plc IsNot Nothing Then
-            If plc.IsConnected Then
-                Dim dbNumber As Integer = CInt(db)
-                Dim startByteAdr As Integer = CInt(offset)
-                Dim byteCount As Integer = CInt(count)
-
+            Try
                 Dim rawData As Byte() = plc.ReadBytes(DataType.DataBlock, dbNumber, startByteAdr, byteCount)
-                If rawData IsNot Nothing Then
-                    Dim result As Integer = S7.Net.Types.Word.FromByteArray(rawData)
-                    resultText = result.ToString()
+                If rawData IsNot Nothing AndAlso rawData.Length >= 2 Then
+                    Dim theWord As Integer = S7.Net.Types.Word.FromByteArray(rawData)
+                    OkumaYazmaTestPLC.Form1.lastJobContext.Text = "Başarıyla okundu."
+                    Return theWord
                 Else
-                    MessageBox.Show("Failed to read data from PLC")
+                    OkumaYazmaTestPLC.Form1.lastJobContext.Text = "Değer okunamadı."
                 End If
-            Else
-                MessageBox.Show("Not connected to PLC")
-            End If
+            Catch ex As Exception
+                ' Handle the exception or display an error message
+                OkumaYazmaTestPLC.Form1.lastJobContext.Text = "Okuma hatası"
+            End Try
+
         Else
-            MessageBox.Show("Plc is not responding or not connected at " + plcAdress)
+            OkumaYazmaTestPLC.Form1.lastJobContext.Text = "İşlem Başarısız"
+            OkumaYazmaTestPLC.Form1.pingStatus.Text = "PLC Ulaşılabilir durumda değil. IP: " + plcAdress
         End If
 
-        Return resultText
+        Return 0 ' Return a default value if the reading failed
     End Function
 
-    'This function reads the String[30] value in the PLC'
-    Public Function ReadStringFromPLC(plc As Plc, db As Integer, offset As Double, byteCount As Integer) As String
-        Dim result As String = String.Empty
 
-        If PingIpAddress(plcAdress) AndAlso plc IsNot Nothing Then
-            If plc.IsConnected Then
-                Dim dbNumber As Integer = CInt(db)
-                Dim startByteAdr As Integer = CInt(offset)
+    'BU FONKSİYON PLC'DEKİ STRING VERİLERİ OKUR'
+    Public Function ReadStringFromPLC(plc As Plc, db As Integer, offset As Integer, byteCount As Integer) As String
+        If Variables.pingResponse AndAlso plc IsNot Nothing AndAlso plc.IsConnected Then
+            OkumaYazmaTestPLC.Form1.pingStatus.Text = "PLC Bağlı"
+            Dim dbNumber As Integer = db
+            Dim startByteAdr As Integer = offset
 
+            Try
                 Dim rawData As Byte() = plc.ReadBytes(DataType.DataBlock, dbNumber, startByteAdr, byteCount)
                 If rawData IsNot Nothing Then
-                    result = S7.Net.Types.String.FromByteArray(rawData)
+                    OkumaYazmaTestPLC.Form1.lastJobContext.Text = "Başarıyla okundu."
+                    Return S7.Net.Types.String.FromByteArray(rawData)
                 Else
-                    MessageBox.Show("Failed to read data from PLC")
+                    OkumaYazmaTestPLC.Form1.lastJobContext.Text = "Değer okunamadı."
                 End If
-            Else
-                MessageBox.Show("Not connected to PLC")
-            End If
+            Catch ex As Exception
+                ' Handle the exception or display an error message
+                OkumaYazmaTestPLC.Form1.lastJobContext.Text = "Okuma hatası"
+            End Try
+
         Else
-            MessageBox.Show("Plc is not responding or not connected at " + plcAdress)
+            OkumaYazmaTestPLC.Form1.lastJobContext.Text = "İşlem Başarısız"
+            OkumaYazmaTestPLC.Form1.pingStatus.Text = "PLC Ulaşılabilir durumda değil. IP: " + plcAdress
+        End If
+
+        Return String.Empty ' Return an empty string if the reading failed
+    End Function
+
+
+    'BU FONKSİYON PLC'DEKİ DINT VERİLERİ OKUR'
+    Public Function ReadDIntFromPLC(plc As Plc, db As Integer, offset As Integer, byteCount As Integer) As Integer
+        Dim result As Integer = 0
+
+        If Variables.pingResponse AndAlso plc IsNot Nothing AndAlso plc.IsConnected Then
+            OkumaYazmaTestPLC.Form1.pingStatus.Text = "PLC Bağlı"
+            Dim dbNumber As Integer = db
+            Dim startByteAdr As Integer = offset
+
+            Try
+                Dim rawData As Byte() = plc.ReadBytes(DataType.DataBlock, dbNumber, startByteAdr, byteCount)
+                If rawData IsNot Nothing Then
+                    result = S7.Net.Types.DInt.FromByteArray(rawData)
+                    OkumaYazmaTestPLC.Form1.lastJobContext.Text = "Başarıyla okundu."
+                Else
+                    OkumaYazmaTestPLC.Form1.lastJobContext.Text = "Değer okunamadı."
+                End If
+            Catch ex As Exception
+                ' Handle the exception or display an error message
+                OkumaYazmaTestPLC.Form1.lastJobContext.Text = "Okuma hatası"
+            End Try
+
+        Else
+            OkumaYazmaTestPLC.Form1.lastJobContext.Text = "İşlem Başarısız"
+            OkumaYazmaTestPLC.Form1.pingStatus.Text = "PLC Ulaşılabilir durumda değil. IP: " + plcAdress
         End If
 
         Return result
     End Function
 
-    'This function reads the DINT value in the PLC'
-    Public Function ReadDIntFromPLC(plc As Plc, db As Integer, offset As Double, byteCount As Integer) As String
-        Dim Result As String = String.Empty
 
-        If PingIpAddress(plcAdress) AndAlso plc IsNot Nothing Then
-            If plc.IsConnected Then
-                Dim dbNumber As Integer = CInt(db)
-                Dim startByteAdr As Integer = CInt(offset)
+    'BU FONKSİYON PLC'DEKİ REAL VERİLERİ OKUR'
+    Public Function ReadRealFromPLC(plc As Plc, db As Integer, offset As Integer, byteCount As Integer) As Double
+        Dim result As Double = 0.0
 
+        If Variables.pingResponse AndAlso plc IsNot Nothing AndAlso plc.IsConnected Then
+            OkumaYazmaTestPLC.Form1.pingStatus.Text = "PLC Bağlı"
+            Dim dbNumber As Integer = db
+            Dim startByteAdr As Integer = offset
+
+            Try
                 Dim rawData As Byte() = plc.ReadBytes(DataType.DataBlock, dbNumber, startByteAdr, byteCount)
                 If rawData IsNot Nothing Then
-                    Result = S7.Net.Types.DInt.FromByteArray(rawData)
+                    Dim floatValue As Single = S7.Net.Types.Real.FromByteArray(rawData)
+                    result = Math.Round(floatValue, 1) ' Round to one decimal place
+                    OkumaYazmaTestPLC.Form1.lastJobContext.Text = "Başarıyla okundu."
                 Else
-                    MessageBox.Show("Failed to read data from PLC")
+                    OkumaYazmaTestPLC.Form1.lastJobContext.Text = "Değer okunamadı."
                 End If
-            Else
-                MessageBox.Show("Not connected to PLC")
-            End If
+            Catch ex As Exception
+                ' Handle the exception or display an error message
+                OkumaYazmaTestPLC.Form1.lastJobContext.Text = "Okuma hatası"
+            End Try
+
         Else
-            MessageBox.Show("Plc is not responding or not connected at " + plcAdress)
+            OkumaYazmaTestPLC.Form1.lastJobContext.Text = "İşlem Başarısız"
+            OkumaYazmaTestPLC.Form1.pingStatus.Text = "PLC Ulaşılabilir durumda değil. IP: " + plcAdress
         End If
 
-        Return Result.ToString()
+        Return result
     End Function
 
-    'This function reads the REAL value in the PLC'
-    Public Function ReadRealFromPLC(plc As Plc, db As Integer, offset As Double, byteCount As Integer) As String
-        Dim result As String = String.Empty
 
-        If PingIpAddress(plcAdress) AndAlso plc IsNot Nothing Then
-            If plc.IsConnected Then
-                Dim dbNumber As Integer = CInt(db)
-                Dim startByteAdr As Integer = CInt(offset)
 
-                Dim rawData As Byte() = plc.ReadBytes(DataType.DataBlock, dbNumber, startByteAdr, byteCount)
-                If rawData IsNot Nothing Then
-                    result = S7.Net.Types.Real.FromByteArray(rawData) 'Format the result With 2 Decimal places
-                Else
-                    MessageBox.Show("Failed to read data from PLC")
-                End If
-            Else
-                MessageBox.Show("Not connected to PLC")
-            End If
-        Else
-            MessageBox.Show("Plc is not responding or not connected at " + plcAdress)
-        End If
-
-        Return result.ToString()
-    End Function
-
-    'This function reads the BOOL value in the PLC'
+    'BU FONKSİYON PLC'DEKİ BOOLEAN VERİLERİ OKUR'
     Public Function ReadBooleanFromPLC(plc As Plc, db As Integer, offset As Integer) As Boolean
-        If PingIpAddress(plcAdress) AndAlso plc IsNot Nothing Then
-            If plc.IsConnected Then
-                Dim dbNumber As Integer = CInt(db)
-                Dim startByteAdr As Integer = CInt(offset)
+
+        If Variables.pingResponse AndAlso plc IsNot Nothing AndAlso plc.IsConnected Then
+            OkumaYazmaTestPLC.Form1.pingStatus.Text = "PLC Bağlı"
+            Try
+                Dim dbNumber As Integer = db
+                Dim startByteAdr As Integer = offset
 
                 ' Read the byte containing the boolean value from the PLC '
                 Dim rawData As Byte() = plc.ReadBytes(DataType.DataBlock, dbNumber, startByteAdr, 1)
                 Dim value As Boolean = (rawData(0) And &H1) <> 0
+                OkumaYazmaTestPLC.Form1.lastJobContext.Text = "Başarıyla okundu."
 
                 Return value
-            Else
-                MessageBox.Show("Not connected to PLC")
-                Return False
-            End If
+            Catch ex As Exception
+                OkumaYazmaTestPLC.Form1.lastJobContext.Text = "Okuma hatası"
+            End Try
         Else
-            MessageBox.Show("Plc is not responding or not connected at " + plcAdress)
-            Return False
+            OkumaYazmaTestPLC.Form1.lastJobContext.Text = "İşlem Başarısız"
+            OkumaYazmaTestPLC.Form1.pingStatus.Text = "PLC Ulaşılabilir durumda değil. IP: " + plcAdress
         End If
+
+        Return False
     End Function
 
-    'This function reads the INT value in the PLC'
+
+
+    'BU FONKSİYON PLC'DEKİ INT VERİLERİ OKUR'
     Public Function ReadIntFromPLC(plc As Plc, db As Integer, offset As Double, byteCount As Integer) As Integer
         Dim result As Integer = 0
 
-        If PingIpAddress(plcAdress) AndAlso plc IsNot Nothing Then
+        If Variables.pingResponse AndAlso plc IsNot Nothing Then
             If plc.IsConnected Then
-                Dim dbNumber As Integer = CInt(db)
-                Dim startByteAdr As Integer = CInt(offset)
+                OkumaYazmaTestPLC.Form1.pingStatus.Text = "PLC Bağlı"
+                Try
+                    Dim dbNumber As Integer = CInt(db)
+                    Dim startByteAdr As Integer = CInt(offset)
 
-                Dim rawData As Byte() = plc.ReadBytes(DataType.DataBlock, dbNumber, startByteAdr, byteCount)
-                If rawData IsNot Nothing Then
-                    result = S7.Net.Types.Int.FromByteArray(rawData)
-                Else
-                    MessageBox.Show("Failed to read data from PLC")
-                End If
+                    Dim rawData As Byte() = plc.ReadBytes(DataType.DataBlock, dbNumber, startByteAdr, byteCount)
+                    If rawData IsNot Nothing AndAlso rawData.Length >= 2 Then
+                        result = S7.Net.Types.Int.FromByteArray(rawData)
+                        OkumaYazmaTestPLC.Form1.lastJobContext.Text = "Başarıyla okundu."
+                    Else
+                        OkumaYazmaTestPLC.Form1.lastJobContext.Text = "Değer okunamadı."
+                    End If
+                Catch ex As Exception
+                    OkumaYazmaTestPLC.Form1.lastJobContext.Text = "Okuma hatası"
+                End Try
             Else
-                MessageBox.Show("Not connected to PLC")
+                OkumaYazmaTestPLC.Form1.lastJobContext.Text = "İşlem Başarısız"
             End If
         Else
-            MessageBox.Show("Plc is not responding or not connected at " + plcAdress)
+            OkumaYazmaTestPLC.Form1.lastJobContext.Text = "İşlem Başarısız"
+            OkumaYazmaTestPLC.Form1.pingStatus.Text = "PLC Ulaşılabilir durumda değil. IP: " + plcAdress
         End If
 
         Return result
     End Function
 
 
-    'READ FUNCTIONS END'
+
+    'OKUMA FONKSİYONLARI BİTİŞ'
 
     '---------------------------------------------------------------------------------------------------------------------------------------'
 
-    'WRITE FUNCTIONS START'
+    'YAZMA FONKSİYONLARI BAŞLANGIÇ'
 
-    'This function writes the WORD value to the PLC'
+    'BU FONKSİYON PLC'YE WORD VERİLERİ YAZAR'
     Public Sub WriteWordToPLC(plc As Plc, db As Integer, offset As Double, valueToWrite As String)
-        If PingIpAddress(plcAdress) AndAlso plc IsNot Nothing Then
+        If Variables.pingResponse AndAlso plc IsNot Nothing Then
             If plc.IsConnected Then
+                OkumaYazmaTestPLC.Form1.pingStatus.Text = "PLC Bağlı"
                 Dim dbNumber As Integer = CInt(db)
                 Dim startByteAdr As Integer = CInt(offset)
                 Dim ushortValue As UShort
 
                 If UShort.TryParse(valueToWrite, ushortValue) Then
-                    Dim data As Byte() = BitConverter.GetBytes(ushortValue)
-                    Array.Reverse(data) ' Reverse the byte order for the Endian conversion '
-                    plc.WriteBytes(DataType.DataBlock, dbNumber, startByteAdr, data)
-                    MessageBox.Show("Data written to PLC successfully")
+                    Try
+                        Dim data As Byte() = BitConverter.GetBytes(ushortValue)
+                        Array.Reverse(data) ' Reverse the byte order for the Endian conversion '
+                        plc.WriteBytes(DataType.DataBlock, dbNumber, startByteAdr, data)
+                        OkumaYazmaTestPLC.Form1.lastJobContext.Text = "Başarıyla yazıldı."
+                    Catch ex As Exception
+                        MessageBox.Show("Yazarken hata: " + ex.Message)
+                    End Try
                 Else
-                    MessageBox.Show("Invalid value")
+                    MessageBox.Show("Geçersiz değer.")
                 End If
             Else
-                MessageBox.Show("Not connected to PLC")
+                OkumaYazmaTestPLC.Form1.lastJobContext.Text = "İşlem Başarısız"
             End If
         Else
-            MessageBox.Show("Plc is not responding or not connected at " + plcAdress)
+            OkumaYazmaTestPLC.Form1.lastJobContext.Text = "İşlem Başarısız"
+            OkumaYazmaTestPLC.Form1.pingStatus.Text = "PLC Ulaşılabilir durumda değil. IP: " + plcAdress
         End If
     End Sub
 
-    'This function writes the String[30] value to the PLC'
+
+    'BU FONKSİYON PLC'YE STRING VERİLERİ YAZAR'
     Public Sub WriteStringToPLC(plc As Plc, db As Integer, offset As Double, valueToWrite As String, expectedLength As Integer)
-        If PingIpAddress(plcAdress) AndAlso plc IsNot Nothing Then
+        If Variables.pingResponse AndAlso plc IsNot Nothing Then
             If plc.IsConnected Then
+                OkumaYazmaTestPLC.Form1.pingStatus.Text = "PLC Bağlı"
                 ' Truncate or pad the valueToWrite to match the expected length '
-                If valueToWrite.Length > expectedLength Then
-                    valueToWrite = valueToWrite.Substring(0, expectedLength)
-                Else
-                    valueToWrite = valueToWrite.PadRight(expectedLength, Chr(0)) 'valueToWrite.PadRight(expectedLength, " ") Or
-                End If
+                valueToWrite = valueToWrite.PadRight(expectedLength, ChrW(0))
 
-                Dim dbNumber As Integer = CInt(db)
-                Dim startByteAdr As Integer = CInt(offset)
-                Dim rawData As Byte() = Encoding.Default.GetBytes(valueToWrite)
-                plc.WriteBytes(DataType.DataBlock, dbNumber, startByteAdr, rawData)
+                Try
+                    Dim dbNumber As Integer = CInt(db)
+                    Dim startByteAdr As Integer = CInt(offset)
+                    Dim rawData As Byte() = Encoding.Default.GetBytes(valueToWrite)
+                    plc.WriteBytes(DataType.DataBlock, dbNumber, startByteAdr, rawData)
 
-                MessageBox.Show("Data written to PLC successfully")
+                    OkumaYazmaTestPLC.Form1.lastJobContext.Text = "Başarıyla yazıldı."
+                Catch ex As Exception
+                    MessageBox.Show("Yazarken hata: " + ex.Message)
+                End Try
             Else
-                MessageBox.Show("Not connected to PLC")
+                OkumaYazmaTestPLC.Form1.lastJobContext.Text = "İşlem Başarısız"
             End If
         Else
-            MessageBox.Show("Plc is not responding or not connected at " + plcAdress)
+            OkumaYazmaTestPLC.Form1.lastJobContext.Text = "İşlem Başarısız"
+            OkumaYazmaTestPLC.Form1.pingStatus.Text = "PLC Ulaşılabilir durumda değil. IP: " + plcAdress
         End If
     End Sub
 
-    'This function writes the DINT value to the PLC'
+
+    'BU FONKSİYON PLC'YE DINT VERİLERİ YAZAR'
     Public Sub WriteDIntToPLC(plc As Plc, db As Integer, offset As Double, valueToWrite As String)
-        If PingIpAddress(plcAdress) AndAlso plc IsNot Nothing Then
+        If Variables.pingResponse AndAlso plc IsNot Nothing Then
             If plc.IsConnected Then
+                OkumaYazmaTestPLC.Form1.pingStatus.Text = "PLC Bağlı"
                 Dim dbNumber As Integer = CInt(db)
                 Dim startByteAdr As Integer = CInt(offset)
                 Dim int32Value As Int32
 
                 If Int32.TryParse(valueToWrite, int32Value) Then
-                    Dim data As Byte() = BitConverter.GetBytes(int32Value)
-                    Array.Reverse(data) ' Reverse the byte order for the Endian conversion '
-                    plc.WriteBytes(DataType.DataBlock, dbNumber, startByteAdr, data)
-                    MessageBox.Show("Data written to PLC successfully")
+                    Try
+                        Dim data As Byte() = S7.Net.Types.DInt.ToByteArray(int32Value)
+                        plc.WriteBytes(DataType.DataBlock, dbNumber, startByteAdr, data)
+                        OkumaYazmaTestPLC.Form1.lastJobContext.Text = "Başarıyla yazıldı."
+                    Catch ex As Exception
+                        MessageBox.Show("Yazarken hata: " + ex.Message)
+                    End Try
                 Else
-                    MessageBox.Show("Invalid value")
+                    MessageBox.Show("Geçersiz değer.")
                 End If
             Else
-                MessageBox.Show("Not connected to PLC")
+                OkumaYazmaTestPLC.Form1.lastJobContext.Text = "İşlem Başarısız"
             End If
         Else
-            MessageBox.Show("Plc is not responding or not connected at " + plcAdress)
+            OkumaYazmaTestPLC.Form1.lastJobContext.Text = "İşlem Başarısız"
+            OkumaYazmaTestPLC.Form1.pingStatus.Text = "PLC Ulaşılabilir durumda değil. IP: " + plcAdress
         End If
-
     End Sub
 
-    'This function writes the REAL value to the PLC'
+
+    'BU FONKSİYON PLC'YE REAL VERİLERİ YAZAR'
     Public Sub WriteRealToPLC(plc As Plc, db As Integer, offset As Double, valueToWrite As String)
-        If PingIpAddress(plcAdress) AndAlso plc IsNot Nothing Then
+        If Variables.pingResponse AndAlso plc IsNot Nothing Then
             If plc.IsConnected Then
+                OkumaYazmaTestPLC.Form1.pingStatus.Text = "PLC Bağlı"
                 Dim dbNumber As Integer = CInt(db)
                 Dim startByteAdr As Integer = CInt(offset)
                 Dim singleValue As Single
+
                 If Single.TryParse(valueToWrite, singleValue) Then
-                    Dim data As Byte() = S7.Net.Types.Real.ToByteArray(singleValue)
-                    plc.WriteBytes(DataType.DataBlock, dbNumber, startByteAdr, data)
-                    MessageBox.Show("Data written to PLC successfully")
+                    Try
+                        ' Round the value to the desired precision '
+                        Dim roundedValue As Single = CSng(Math.Round(singleValue, 1))
+                        Dim data As Byte() = S7.Net.Types.Real.ToByteArray(roundedValue)
+
+                        ' Check if the byte count matches the expected length '
+                        If data.Length = 4 Then
+                            plc.WriteBytes(DataType.DataBlock, dbNumber, startByteAdr, data)
+                            OkumaYazmaTestPLC.Form1.lastJobContext.Text = "Başarıyla yazıldı."
+                        Else
+                            MessageBox.Show("Beklenmeyen durum")
+                        End If
+                    Catch ex As Exception
+                        MessageBox.Show("Yazarken hata: " + ex.Message)
+                    End Try
                 Else
-                    MessageBox.Show("Invalid value")
+                    MessageBox.Show("Geçersiz değer.")
                 End If
             Else
-                MessageBox.Show("Not connected to PLC")
+                OkumaYazmaTestPLC.Form1.lastJobContext.Text = "İşlem Başarısız"
             End If
         Else
-            MessageBox.Show("Plc is not responding or not connected at " + plcAdress)
+            OkumaYazmaTestPLC.Form1.lastJobContext.Text = "İşlem Başarısız"
+            OkumaYazmaTestPLC.Form1.pingStatus.Text = "PLC Ulaşılabilir durumda değil. IP: " + plcAdress
         End If
     End Sub
 
-    'This function writes the INT value to the PLC'
+
+
+    'BU FONKSİYON PLC'YE INT DEĞERLERİ YAZAR.'
     Public Sub WriteIntToPLC(plc As Plc, db As Integer, offset As Double, value As String)
-        If PingIpAddress(plcAdress) AndAlso plc IsNot Nothing Then
+        If Variables.pingResponse AndAlso plc IsNot Nothing Then
             If plc.IsConnected Then
+                OkumaYazmaTestPLC.Form1.pingStatus.Text = "PLC Bağlı"
                 Dim dbNumber As Integer = CInt(db)
                 Dim startByteAdr As Integer = CInt(offset)
 
-                If Not String.IsNullOrEmpty(value) AndAlso Integer.TryParse(value, Nothing) Then
-                    Dim intValue As Integer = Integer.Parse(value)
-                    If intValue >= Short.MinValue AndAlso intValue <= Short.MaxValue Then
+                Dim intValue As Integer
+                If Not String.IsNullOrEmpty(value) AndAlso Integer.TryParse(value, intValue) Then
+                    If Short.MinValue <= intValue AndAlso intValue <= Short.MaxValue Then
                         Dim rawData As Byte() = S7.Net.Types.Int.ToByteArray(intValue)
                         plc.WriteBytes(DataType.DataBlock, dbNumber, startByteAdr, rawData)
-
-                        MessageBox.Show("Value written to PLC successfully")
+                        OkumaYazmaTestPLC.Form1.lastJobContext.Text = "Başarıyla yazıldı."
                     Else
-                        MessageBox.Show("Invalid value. Value must be within the range of a signed 16-bit integer (Short).")
+                        MessageBox.Show("Geçersiz değer.")
                     End If
                 Else
-                    MessageBox.Show("Invalid value. Value must be a valid integer.")
+                    MessageBox.Show("Geçersiz değer.")
                 End If
             Else
-                MessageBox.Show("Not connected to PLC")
+                OkumaYazmaTestPLC.Form1.lastJobContext.Text = "İşlem Başarısız"
             End If
         Else
-            MessageBox.Show("Plc is not responding or not connected at " + plcAdress)
+            OkumaYazmaTestPLC.Form1.lastJobContext.Text = "İşlem Başarısız"
+            OkumaYazmaTestPLC.Form1.pingStatus.Text = "PLC Ulaşılabilir durumda değil. IP: " + plcAdress
         End If
     End Sub
 
-    'WRITE FUNCTIONS END'
+
+    'YAZMA FONKSİYONLARI BİTİŞ'
 
 End Class

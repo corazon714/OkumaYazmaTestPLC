@@ -1,4 +1,5 @@
-﻿Imports System.Text
+﻿Imports System.ComponentModel
+Imports System.Text
 Imports System.Threading
 Imports System.Windows.Forms.VisualStyles.VisualStyleElement
 Imports S7.Net
@@ -8,65 +9,75 @@ Imports variables = OkumaYazmaTestPLC.Variables
 
 
 Public Class Form1
+    'functions.vb DOSYASININ DAHİL EDİLMESİ'
     Dim funcs As New Functions()
 
+    'PLC TANIMLAMASI'
     Private Plc As Plc
 
+    'BAĞLANTIYI HARAKETE GEÇİRMEK İÇİN AYRICA BİR TANIMLAMADIR. Plc.IsConnected İLE KARIŞTIRILMAMALIDIR.'
+    Private isConnected As Boolean = False ' Flag to track the connection status
+
+    'UYGULAMA ALIŞTIĞINDA YAPILACAK İŞLEMLER'
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        ' Connect to PLC at the desired IP address '
+        Dim counter As Integer = 0
+        ' BELİRLENEN IP ADRESİNDEKİ PLC'Yİ OLUŞTUR '
         Plc = New Plc(CpuType.S71200, plcAdress, 0, 1)
 
-        'setting timer for connection '
-        connectionTimer.Interval = 550
+        'SÜREKLİ İŞLEMLERİN KONTROLÜ İÇİN ZAMANLAYICI '
+        connectionTimer.Interval = 500
         connectionTimer.Start()
 
-        ' Open the connection to the PLC '
-        If Functions.PingIpAddress(plcAdress) Then
+        ' PLC'YE BAĞLAN '
+        If Variables.pingResponse Then
             Try
                 Plc.Open()
+                lastJobContext.Text = ""
             Catch ex As Exception
-                MessageBox.Show("Cannot connect to PLC at " + plcAdress)
+                pingStatus.Text = "PLC Ulaşılabilir durumda değil. IP: " + plcAdress
+                lastJobContext.Text = ""
+                MessageBox.Show("PLC Ulaşılabilir durumda değil. IP: " + plcAdress)
             End Try
         Else
-            MessageBox.Show("Cannot connect to PLC at " + plcAdress)
+            pingStatus.Text = "PLC Ulaşılabilir durumda değil. IP: " + plcAdress
+            lastJobContext.Text = ""
+            If counter > 0 Then
+                MessageBox.Show("PLC Ulaşılabilir durumda değil. IP: " + plcAdress)
+            End If
         End If
     End Sub
 
-
+    'BU FONKSİYON BAĞLANTI KOPMASI DURUMDA OTOMATİK BAĞLANMADA SIKINTI ÇIKARSA KULLANILMASI İÇİN PROGRAMLANMIŞTIR. SİSTEMİ YENİDEN BAŞLATMAK İÇİN DE KULLANILABİLİR.'
     Private Sub btnConnect_Click(sender As Object, e As EventArgs) Handles btnConnect.Click
-        ' Connect to PLC at 192.168.10.215 using S7.Net '
+        ' PLC BAĞLANTISI KUR '
         Plc = New Plc(CpuType.S71200, plcAdress, 0, 1)
-        If Functions.PingIpAddress(plcAdress) Then
+        If Variables.pingResponse Then
             Try
                 Plc.Open()
-                If Plc.IsConnected Then
-                    MessageBox.Show("Connected to PLC")
-                Else
-                    MessageBox.Show("Cannot connect to PLC")
-                End If
+                pingStatus.Text = "PLC Bağlı"
             Catch ex As Exception
-                MessageBox.Show("Cannot connect to PLC at " + plcAdress)
+                pingStatus.Text = "PLC Ulaşılabilir durumda değil. IP: " + plcAdress
+                MessageBox.Show("PLC Ulaşılabilir durumda değil. IP: " + plcAdress)
             End Try
         Else
-            MessageBox.Show("Cannot connect to PLC at " + plcAdress)
+            pingStatus.Text = "PLC Ulaşılabilir durumda değil. IP: " + plcAdress
+            MessageBox.Show("PLC Ulaşılabilir durumda değil. IP: " + plcAdress)
         End If
     End Sub
 
+    'PLC KOPTUĞUNDA TEKRAR BAĞLANACAK MI SORUSUNA YANIT İÇİN DENEME FONKSİYONUDUR. BAĞLANTIYI KOPARIR.'
     Private Sub btnDisconnet_Click(sender As Object, e As EventArgs) Handles btnDisconnet.Click
-        'disconnect from PLC '
-        If Functions.PingIpAddress(plcAdress) AndAlso Plc IsNot Nothing Then
+        'PLC BAĞLANTISINI KOPAR '
+        If Variables.pingResponse AndAlso Plc IsNot Nothing Then
             Try
                 Plc.Close()
-                If Plc.IsConnected Then
-                    MessageBox.Show("Cannot disconnect from PLC")
-                Else
-                    MessageBox.Show("Disconnected from PLC")
-                End If
             Catch ex As Exception
-                MessageBox.Show("Cannot disconnect from PLC at " + plcAdress)
+                pingStatus.Text = "PLC'den ayrılınamıyor. IP: " + plcAdress
+                MessageBox.Show("PLC'den ayrılınamıyor. IP: " + plcAdress)
             End Try
         Else
-            MessageBox.Show("There is no response or you are not connected to PLC at " + plcAdress)
+            pingStatus.Text = "PLC Ulaşılabilir durumda değil. IP: " + plcAdress
+            MessageBox.Show("PLC Ulaşılabilir durumda değil. IP: " + plcAdress)
         End If
     End Sub
 
@@ -80,7 +91,7 @@ Public Class Form1
 
     Private Sub btnToggleValue_Click(sender As Object, e As EventArgs) Handles btnReadTest.Click
         ' Call the ToggleValueInPLC function '
-        funcs.ToggleValueInPLC(Plc, 1994, 0)
+        funcs.ToggleBoolValueInPLC(Plc, 1994, 0)
     End Sub
 
     Private Sub btnReadBaleWeight_Click(sender As Object, e As EventArgs) Handles btnReadBaleWeight.Click
@@ -199,62 +210,233 @@ Public Class Form1
 
     End Sub
 
+    'BU ZAMANLAYICI SÜREKLİ İŞLEMLER YAPMAK İSTENİLDİĞİNDE KULLANILACAK BİR SANİYE SAYACIDIR.
     Private Sub connectionTimer_Tick(sender As Object, e As EventArgs) Handles connectionTimer.Tick
-        If Functions.PingIpAddress(plcAdress) Then
+        ' Disable the timer while the BackgroundWorker is running
+        txtSaniye.Text = Now.ToString("HH:mm:ss")
+    End Sub
+
+    'ZAMANLAYICIYU GÖSTEREN TEXTBOX TAKİ DEĞİŞİMİ KULLANARAK SÜREKLİ İŞLEMLERİ YAPMAYI SAĞLAR.
+    Public lasJobStatusCounter As Integer = 0
+    Private Async Sub txtSaniye_TextChanged(sender As Object, e As EventArgs) Handles txtSaniye.TextChanged
+        'PİNG FONKSİYONU ASENKRON OLARAK KULLANILARAK PERFORMANS ARTTIRILMIŞTIR. AYNI ZAMANDA AWAİT KULLANIMINA OLANAK VERDİĞİ İÇİN OLASI HATALARDAN DA KAÇINMAMIZI SAĞLAR.'
+        Dim isPingSuccessful As Boolean = Await Functions.PingIpAddress(plcAdress)
+
+        '5 saniyede bir son işlemi gösteren label ı temizler.
+        If lastJobContext.Text IsNot "" Then
+            lasJobStatusCounter += 1
+            If lasJobStatusCounter >= 5 Then
+                lastJobContext.Text = ""
+                lasJobStatusCounter = 0
+            End If
+        End If
+
+        If isPingSuccessful Then
             ' PLC is reachable
-            lblPingStatus.Text = "Reachable"
-            ' Check the connection status
+            lblPingStatus.Text = "Ulaşılabilir."
+
             If Plc IsNot Nothing AndAlso Plc.IsConnected Then
-                ' Connected to PLC
-                lblConnectionStatus.Text = "Connected"
-                ' Loop through the PlcDataItems
-                For Each item As PlcDataItem In plcDataItems
-                    Dim name As String = item.Name
-                    Dim type As String = item.Type
-                    Dim dbNumber As Integer = item.DbNumber
-                    Dim startByteAddress As Integer = item.StartByteAddress
-                    Dim byteCount As Integer = item.ByteCount
-                    Dim textBoxName As String = item.TextBoxName
+                If Not isConnected Then
+                    ' PLC has just been connected
+                    isConnected = True
+                    lblConnectionStatus.Text = "Bağlantı var."
+                    pingStatus.Text = "PLC Bağlı"
+                End If
 
-                    ' Find the TextBox control by its name
-                    Dim textBox As System.Windows.Forms.TextBox = Functions.FindControl(Me, textBoxName)
-
-                    If textBox IsNot Nothing Then
-                        ' Read the value from the PLC based on the data type
-                        Select Case type
-                            Case "String"
-                                Dim value As String = funcs.ReadStringFromPLC(Plc, dbNumber, startByteAddress, byteCount)
-                                textBox.Text = value
-                            Case "Boolean"
-                                Dim value As Boolean = funcs.ReadBooleanFromPLC(Plc, dbNumber, startByteAddress)
-                                textBox.Text = value.ToString()
-                            Case "Int"
-                                Dim value As Integer = funcs.ReadIntFromPLC(Plc, dbNumber, startByteAddress, byteCount)
-                                textBox.Text = value.ToString()
-                            Case "DInt"
-                                Dim value As Integer = funcs.ReadDIntFromPLC(Plc, dbNumber, startByteAddress, byteCount)
-                                textBox.Text = value.ToString()
-                            Case "Word"
-                                Dim value As Integer = funcs.ReadWordFromPLC(Plc, dbNumber, startByteAddress, byteCount)
-                                textBox.Text = value.ToString()
-                            Case "Real"
-                                Dim value As Double = funcs.ReadRealFromPLC(Plc, dbNumber, startByteAddress, byteCount)
-                                textBox.Text = value.ToString()
-                            Case Else
-                                MessageBox.Show($"Unknown data type '{type}'")
-                        End Select
-                    Else
-                        MessageBox.Show($"TextBox control '{textBoxName}' not found.")
+                If Variables.pingResponse Then
+                    ' ARKAPLAN İŞLLEMLERİNİ BAŞLATARAK VERİLERİ OKUR'
+                    If Not BackgroundWorker1.IsBusy Then
+                        ' Start the BackgroundWorker
+                        BackgroundWorker1.RunWorkerAsync(plcDataItems)
                     End If
-                Next
+                End If
             Else
-                ' Not connected to PLC
-                lblConnectionStatus.Text = "Disconnected"
+                lblPingStatus.Text = "PLC Bağlı Değil"
+                If Variables.pingResponse Then
+                    ' PLC ULAŞILABİLİR AMA BAĞLI DEĞİL'
+                    lblPingStatus.Text = "Ulaşılabilir."
+
+                    ' PLC'YE BAĞLANMAYA ÇALIŞIR'
+                    Try
+                        Plc.Open()
+                        lastJobContext.Text = ""
+                        If Plc.IsConnected Then
+                            ' PLC BAĞLI'
+                            lblConnectionStatus.Text = "Bağlantı var."
+                            isConnected = True
+                            pingStatus.Text = "PLC Bağlı"
+
+                            ' VERİYİ ALMAK İÇİN ARKAPLAN İŞLEMLERİNİ BAŞLATIR'
+                            BackgroundWorker1.RunWorkerAsync(plcDataItems)
+                        Else
+                            ' PLC BAĞLI DEĞİLDİR
+                            lblConnectionStatus.Text = "Bağlantı yok."
+                            lastJobContext.Text = ""
+                            isConnected = False
+                        End If
+                    Catch ex As Exception
+                        ' PLC BAĞLI DEĞİLDİR
+                        lblConnectionStatus.Text = "Bağlantı yok."
+                        lastJobContext.Text = ""
+                        isConnected = False
+                    End Try
+                Else
+                    ' PLC ULAŞILAMAZ'
+                    lblPingStatus.Text = "Ulaşılamaz"
+                    lblConnectionStatus.Text = "Bağlantı yok."
+                    lastJobContext.Text = ""
+                    isConnected = False
+                End If
             End If
         Else
-            ' PLC is not reachable
-            lblPingStatus.Text = "Not reachable"
-            lblConnectionStatus.Text = "Disconnected"
+            ' PLC ULAŞILAMAZ'
+            lblPingStatus.Text = "Ulaşılamaz"
+            lblConnectionStatus.Text = "Bağlantı yok."
+            lastJobContext.Text = ""
+            isConnected = False ' Reset the connection status flag
         End If
+    End Sub
+
+
+    'BU KISIM ARKAPLAN İŞLEMLERİNİ YAPAR. YAPILACAK İŞLEMLERİN YAZILDIĞI YERDİR.
+    Private Sub backgroundWorker1_DoWork(sender As Object, e As DoWorkEventArgs) Handles BackgroundWorker1.DoWork
+        ' variables.vb DOSYASINDA TANIMLANAN VERİ DİZİSİNİ ALIR.
+        Dim items As PlcDataItem() = DirectCast(e.Argument, PlcDataItem())
+
+        'ARKAPLAN İLEMLERİ YAPILIRKEN ZAMANLAYICIYI DURDURUR.
+        connectionTimer.Enabled = False
+        ' DİZİDE DÖNEREK HER BİR VERİ İÇİN İŞLEM YAPAR.
+        For Each item As PlcDataItem In items
+            Dim name As String = item.Name
+            Dim type As String = item.Type
+            Dim dbNumber As Integer = item.DbNumber
+            Dim startByteAddress As Integer = item.StartByteAddress
+            Dim byteCount As Integer = item.ByteCount
+
+            ' Read the value from the PLC based on the data type
+            Select Case type
+                Case "String"
+                    Dim value As String = funcs.ReadStringFromPLC(Plc, dbNumber, startByteAddress, byteCount)
+                    item.Value = value
+                Case "Boolean"
+                    Dim value As Boolean = funcs.ReadBooleanFromPLC(Plc, dbNumber, startByteAddress)
+                    item.Value = value
+                Case "Int"
+                    Dim value As Integer = funcs.ReadIntFromPLC(Plc, dbNumber, startByteAddress, byteCount)
+                    item.Value = value
+                Case "DInt"
+                    Dim value As Integer = funcs.ReadDIntFromPLC(Plc, dbNumber, startByteAddress, byteCount)
+                    item.Value = value
+                Case "Word"
+                    Dim value As Integer = funcs.ReadWordFromPLC(Plc, dbNumber, startByteAddress, byteCount)
+                    item.Value = value
+                Case "Real"
+                    Dim value As Double = funcs.ReadRealFromPLC(Plc, dbNumber, startByteAddress, byteCount)
+                    item.Value = value
+                Case Else
+                    MessageBox.Show($"Unknown data type '{type}'")
+            End Select
+        Next
+    End Sub
+
+    'BU KISIM ARKAPLAN İŞLEMLERİ BİTTİKTEN SONRA SONUÇLARI DÖNER'
+    Private Sub backgroundWorker1_RunWorkerCompleted(sender As Object, e As RunWorkerCompletedEventArgs) Handles BackgroundWorker1.RunWorkerCompleted
+        If e.Error IsNot Nothing Then
+            ' ARKAPLAN İŞLEMLERİ SIRASINDA BİR HATA OLUŞUP OLUŞMADIĞINI KONTROL EDER.'
+            MessageBox.Show($"An error occurred: {e.Error.Message}")
+        Else
+            ' GELEN VERİLERLE ARAYÜZÜ GÜNCELLER'
+
+            ' DİZİYİ DÖNEREK HER BİR VERİ İÇİN İŞLEM YAPAR.'
+            For Each item As PlcDataItem In plcDataItems
+                Dim textBoxName As String = item.TextBoxName
+
+                ' DİZİDE VERİLEN TextBoxName VERİSİNE GÖRE UYGUN TextBox'u BULUR.'
+                Dim textBox As System.Windows.Forms.TextBox = Functions.FindControl(Me, textBoxName)
+
+                If textBox IsNot Nothing Then
+                    ' DEĞERİ TextBox'IN Text ÖZELLİĞİNE BAĞLAR.'
+                    textBox.DataBindings.Clear()
+                    textBox.DataBindings.Add("Text", item, "Value")
+                Else
+                    'BU UYARI YALNIZDA GELİŞTİRİCİNİN GÖREBİLECEĞİ BİR UYARIDIR. KULLANICIYA GÖSTERİLMEZ.'
+                    MessageBox.Show($"TextBox control '{textBoxName}' not found.")
+                End If
+            Next
+        End If
+        'ARKAPLAN İŞLEMLERİ TAMAMEN BİTTİĞİ İÇİN ZAMANLAYICI YENİDEN BAŞLATILIR.'
+        connectionTimer.Enabled = True
+    End Sub
+
+    Private Sub btnSetTrueRequest_Click(sender As Object, e As EventArgs) Handles btnSetTrueRequest.Click
+        funcs.SetBoolValueToTrueInPLC(Plc, 1994, 0)
+    End Sub
+
+    Private Sub btnSetFalseRequest_Click(sender As Object, e As EventArgs) Handles btnSetFalseRequest.Click
+        funcs.SetBoolValueToFalseInPLC(Plc, 1994, 0)
+    End Sub
+
+    Private Sub btnDolumBasladiTrue_Click(sender As Object, e As EventArgs) Handles btnDolumBasladiTrue.Click
+        funcs.SetBoolValueToTrueInPLC(Plc, 1994, 64)
+    End Sub
+
+    Private Sub btnDolumBasladiFalse_Click(sender As Object, e As EventArgs) Handles btnDolumBasladiFalse.Click
+        funcs.SetBoolValueToFalseInPLC(Plc, 1994, 64)
+    End Sub
+
+    Private Sub btnHedefKiloTrue_Click(sender As Object, e As EventArgs) Handles btnHedefKiloTrue.Click
+        funcs.SetBoolValueToTrueInPLC(Plc, 1994, 64.1)
+    End Sub
+
+    Private Sub btnHedefKiloFalse_Click(sender As Object, e As EventArgs) Handles btnHedefKiloFalse.Click
+        funcs.SetBoolValueToFalseInPLC(Plc, 1994, 64.1)
+    End Sub
+
+    Private Sub btnPreslemeBasladiTrue_Click(sender As Object, e As EventArgs) Handles btnPreslemeBasladiTrue.Click
+        funcs.SetBoolValueToTrueInPLC(Plc, 1994, 64.2)
+    End Sub
+
+    Private Sub btnPreslemeBasladiFalse_Click(sender As Object, e As EventArgs) Handles btnPreslemeBasladiFalse.Click
+        funcs.SetBoolValueToFalseInPLC(Plc, 1994, 64.2)
+    End Sub
+
+    Private Sub btnPreslemeTamamTrue_Click(sender As Object, e As EventArgs) Handles btnPreslemeTamamTrue.Click
+        funcs.SetBoolValueToTrueInPLC(Plc, 1994, 64.3)
+    End Sub
+
+    Private Sub btnPreslemeTamamFalse_Click(sender As Object, e As EventArgs) Handles btnPreslemeTamamFalse.Click
+        funcs.SetBoolValueToFalseInPLC(Plc, 1994, 64.3)
+    End Sub
+
+    Private Sub btnTelBaglamaBasladiTrue_Click(sender As Object, e As EventArgs) Handles btnTelBaglamaBasladiTrue.Click
+        funcs.SetBoolValueToTrueInPLC(Plc, 1994, 64.4)
+    End Sub
+
+    Private Sub btnTelBaglamaBasladiFalse_Click(sender As Object, e As EventArgs) Handles btnTelBaglamaBasladiFalse.Click
+        funcs.SetBoolValueToFalseInPLC(Plc, 1994, 64.4)
+    End Sub
+
+    Private Sub btnTelBaglamaTamamlandiTrue_Click(sender As Object, e As EventArgs) Handles btnTelBaglamaTamamlandiTrue.Click
+        funcs.SetBoolValueToTrueInPLC(Plc, 1994, 64.5)
+    End Sub
+
+    Private Sub btnTelBaglamaTamamlandiFalse_Click(sender As Object, e As EventArgs) Handles btnTelBaglamaTamamlandiFalse.Click
+        funcs.SetBoolValueToFalseInPLC(Plc, 1994, 64.5)
+    End Sub
+
+    Private Sub btnErpControllerTrue_Click(sender As Object, e As EventArgs) Handles btnErpControllerTrue.Click
+        funcs.SetBoolValueToTrueInPLC(Plc, 1994, 64.6)
+    End Sub
+
+    Private Sub btnErpControllerFalse_Click(sender As Object, e As EventArgs) Handles btnErpControllerFalse.Click
+        funcs.SetBoolValueToFalseInPLC(Plc, 1994, 64.6)
+    End Sub
+
+    Private Sub btnBalingControllerTrue_Click(sender As Object, e As EventArgs) Handles btnBalingControllerTrue.Click
+        funcs.SetBoolValueToTrueInPLC(Plc, 1994, 64.7)
+    End Sub
+
+    Private Sub btnBaleControllerFalse_Click(sender As Object, e As EventArgs) Handles btnBaleControllerFalse.Click
+        funcs.SetBoolValueToFalseInPLC(Plc, 1994, 64.7)
     End Sub
 End Class

@@ -1,7 +1,11 @@
-﻿Module Variables
-    'Plc Adres'
+﻿Imports OkumaYazmaTestPLC.Functions
+Module Variables
+    'PLC ADRESİ'
     Public plcAdress As String = "192.168.10.215"
+    'PİNG CEVABI'
+    Public pingResponse As Boolean = False
 
+    'PLC DEĞERLERİ ARRAY CLASSI
     Public Class PlcDataItem
         Public Property Name As String
         Public Property Type As String
@@ -9,9 +13,11 @@
         Public Property StartByteAddress As Integer
         Public Property ByteCount As Integer
         Public Property TextBoxName As String
+        Public Property Value As Object
 
     End Class
 
+    'ARRAY CLASSI İLE OLUŞTURULAN DEĞERLERİN TANIMLANMASI'
     Public plcDataItems As PlcDataItem() = {
         New PlcDataItem() With {
             .Name = "request",

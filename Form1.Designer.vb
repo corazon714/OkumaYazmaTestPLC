@@ -34,7 +34,6 @@ Partial Class Form1
         txtBaleWeight = New TextBox()
         btnWriteBaleWeight = New Button()
         txtWriteBaleWeight = New TextBox()
-        BackgroundWorker1 = New ComponentModel.BackgroundWorker()
         btnReadPressInfo = New Button()
         txtPressInfo = New TextBox()
         btnWritePressInfo = New Button()
@@ -88,6 +87,30 @@ Partial Class Form1
         connectionTimer = New Timer(components)
         lblConnectionStatus = New Label()
         lblPingStatus = New Label()
+        BackgroundWorker1 = New ComponentModel.BackgroundWorker()
+        txtSaniye = New TextBox()
+        btnSetTrueRequest = New Button()
+        btnSetFalseRequest = New Button()
+        StatusStrip1 = New StatusStrip()
+        pingStatus = New ToolStripStatusLabel()
+        lastJobContext = New ToolStripStatusLabel()
+        btnDolumBasladiTrue = New Button()
+        btnDolumBasladiFalse = New Button()
+        btnHedefKiloTrue = New Button()
+        btnHedefKiloFalse = New Button()
+        btnPreslemeBasladiTrue = New Button()
+        btnPreslemeBasladiFalse = New Button()
+        btnPreslemeTamamTrue = New Button()
+        btnPreslemeTamamFalse = New Button()
+        btnTelBaglamaBasladiTrue = New Button()
+        btnTelBaglamaBasladiFalse = New Button()
+        btnTelBaglamaTamamlandiTrue = New Button()
+        btnTelBaglamaTamamlandiFalse = New Button()
+        btnErpControllerTrue = New Button()
+        btnErpControllerFalse = New Button()
+        btnBalingControllerTrue = New Button()
+        btnBaleControllerFalse = New Button()
+        StatusStrip1.SuspendLayout()
         SuspendLayout()
         ' 
         ' btnConnect
@@ -583,7 +606,7 @@ Partial Class Form1
         ' 
         ' connectionTimer
         ' 
-        connectionTimer.Interval = 550
+        connectionTimer.Interval = 500
         ' 
         ' lblConnectionStatus
         ' 
@@ -603,11 +626,224 @@ Partial Class Form1
         lblPingStatus.TabIndex = 63
         lblPingStatus.Text = "Label1"
         ' 
+        ' BackgroundWorker1
+        ' 
+        ' 
+        ' txtSaniye
+        ' 
+        txtSaniye.Location = New Point(3, 482)
+        txtSaniye.Name = "txtSaniye"
+        txtSaniye.Size = New Size(100, 23)
+        txtSaniye.TabIndex = 64
+        ' 
+        ' btnSetTrueRequest
+        ' 
+        btnSetTrueRequest.Location = New Point(517, 170)
+        btnSetTrueRequest.Name = "btnSetTrueRequest"
+        btnSetTrueRequest.Size = New Size(91, 43)
+        btnSetTrueRequest.TabIndex = 66
+        btnSetTrueRequest.Text = "Set Request to True"
+        btnSetTrueRequest.UseVisualStyleBackColor = True
+        ' 
+        ' btnSetFalseRequest
+        ' 
+        btnSetFalseRequest.Location = New Point(619, 170)
+        btnSetFalseRequest.Name = "btnSetFalseRequest"
+        btnSetFalseRequest.Size = New Size(91, 43)
+        btnSetFalseRequest.TabIndex = 67
+        btnSetFalseRequest.Text = "Set Request to False"
+        btnSetFalseRequest.UseVisualStyleBackColor = True
+        ' 
+        ' StatusStrip1
+        ' 
+        StatusStrip1.Items.AddRange(New ToolStripItem() {pingStatus, lastJobContext})
+        StatusStrip1.Location = New Point(0, 508)
+        StatusStrip1.Name = "StatusStrip1"
+        StatusStrip1.Size = New Size(1225, 22)
+        StatusStrip1.TabIndex = 68
+        StatusStrip1.Text = "StatusStrip1"
+        ' 
+        ' pingStatus
+        ' 
+        pingStatus.Name = "pingStatus"
+        pingStatus.Size = New Size(119, 17)
+        pingStatus.Text = "ToolStripStatusLabel1"
+        ' 
+        ' lastJobContext
+        ' 
+        lastJobContext.Name = "lastJobContext"
+        lastJobContext.Size = New Size(44, 17)
+        lastJobContext.Text = "Durum"
+        ' 
+        ' btnDolumBasladiTrue
+        ' 
+        btnDolumBasladiTrue.Location = New Point(517, 219)
+        btnDolumBasladiTrue.Name = "btnDolumBasladiTrue"
+        btnDolumBasladiTrue.Size = New Size(91, 43)
+        btnDolumBasladiTrue.TabIndex = 69
+        btnDolumBasladiTrue.Text = "dolum basladi true"
+        btnDolumBasladiTrue.UseVisualStyleBackColor = True
+        ' 
+        ' btnDolumBasladiFalse
+        ' 
+        btnDolumBasladiFalse.Location = New Point(619, 219)
+        btnDolumBasladiFalse.Name = "btnDolumBasladiFalse"
+        btnDolumBasladiFalse.Size = New Size(91, 43)
+        btnDolumBasladiFalse.TabIndex = 70
+        btnDolumBasladiFalse.Text = "dolum basladi false"
+        btnDolumBasladiFalse.UseVisualStyleBackColor = True
+        ' 
+        ' btnHedefKiloTrue
+        ' 
+        btnHedefKiloTrue.Location = New Point(517, 268)
+        btnHedefKiloTrue.Name = "btnHedefKiloTrue"
+        btnHedefKiloTrue.Size = New Size(91, 43)
+        btnHedefKiloTrue.TabIndex = 71
+        btnHedefKiloTrue.Text = "hedef kilo true"
+        btnHedefKiloTrue.UseVisualStyleBackColor = True
+        ' 
+        ' btnHedefKiloFalse
+        ' 
+        btnHedefKiloFalse.Location = New Point(619, 268)
+        btnHedefKiloFalse.Name = "btnHedefKiloFalse"
+        btnHedefKiloFalse.Size = New Size(91, 43)
+        btnHedefKiloFalse.TabIndex = 72
+        btnHedefKiloFalse.Text = "hedef kilo false"
+        btnHedefKiloFalse.UseVisualStyleBackColor = True
+        ' 
+        ' btnPreslemeBasladiTrue
+        ' 
+        btnPreslemeBasladiTrue.Location = New Point(517, 317)
+        btnPreslemeBasladiTrue.Name = "btnPreslemeBasladiTrue"
+        btnPreslemeBasladiTrue.Size = New Size(91, 43)
+        btnPreslemeBasladiTrue.TabIndex = 73
+        btnPreslemeBasladiTrue.Text = "presleme basladi true"
+        btnPreslemeBasladiTrue.UseVisualStyleBackColor = True
+        ' 
+        ' btnPreslemeBasladiFalse
+        ' 
+        btnPreslemeBasladiFalse.Location = New Point(619, 317)
+        btnPreslemeBasladiFalse.Name = "btnPreslemeBasladiFalse"
+        btnPreslemeBasladiFalse.Size = New Size(91, 43)
+        btnPreslemeBasladiFalse.TabIndex = 74
+        btnPreslemeBasladiFalse.Text = "presleme basladi false"
+        btnPreslemeBasladiFalse.UseVisualStyleBackColor = True
+        ' 
+        ' btnPreslemeTamamTrue
+        ' 
+        btnPreslemeTamamTrue.Location = New Point(517, 366)
+        btnPreslemeTamamTrue.Name = "btnPreslemeTamamTrue"
+        btnPreslemeTamamTrue.Size = New Size(91, 43)
+        btnPreslemeTamamTrue.TabIndex = 75
+        btnPreslemeTamamTrue.Text = "presleme tamam true"
+        btnPreslemeTamamTrue.UseVisualStyleBackColor = True
+        ' 
+        ' btnPreslemeTamamFalse
+        ' 
+        btnPreslemeTamamFalse.Location = New Point(619, 366)
+        btnPreslemeTamamFalse.Name = "btnPreslemeTamamFalse"
+        btnPreslemeTamamFalse.Size = New Size(91, 43)
+        btnPreslemeTamamFalse.TabIndex = 76
+        btnPreslemeTamamFalse.Text = "presleme tamam false"
+        btnPreslemeTamamFalse.UseVisualStyleBackColor = True
+        ' 
+        ' btnTelBaglamaBasladiTrue
+        ' 
+        btnTelBaglamaBasladiTrue.Location = New Point(517, 415)
+        btnTelBaglamaBasladiTrue.Name = "btnTelBaglamaBasladiTrue"
+        btnTelBaglamaBasladiTrue.Size = New Size(91, 43)
+        btnTelBaglamaBasladiTrue.TabIndex = 77
+        btnTelBaglamaBasladiTrue.Text = "tel baglama basladi true"
+        btnTelBaglamaBasladiTrue.UseVisualStyleBackColor = True
+        ' 
+        ' btnTelBaglamaBasladiFalse
+        ' 
+        btnTelBaglamaBasladiFalse.Location = New Point(619, 415)
+        btnTelBaglamaBasladiFalse.Name = "btnTelBaglamaBasladiFalse"
+        btnTelBaglamaBasladiFalse.Size = New Size(91, 43)
+        btnTelBaglamaBasladiFalse.TabIndex = 78
+        btnTelBaglamaBasladiFalse.Text = "tel baglama basladi false"
+        btnTelBaglamaBasladiFalse.UseVisualStyleBackColor = True
+        ' 
+        ' btnTelBaglamaTamamlandiTrue
+        ' 
+        btnTelBaglamaTamamlandiTrue.Location = New Point(287, 257)
+        btnTelBaglamaTamamlandiTrue.Name = "btnTelBaglamaTamamlandiTrue"
+        btnTelBaglamaTamamlandiTrue.Size = New Size(91, 54)
+        btnTelBaglamaTamamlandiTrue.TabIndex = 79
+        btnTelBaglamaTamamlandiTrue.Text = "tel baglama tamamlandi true"
+        btnTelBaglamaTamamlandiTrue.UseVisualStyleBackColor = True
+        ' 
+        ' btnTelBaglamaTamamlandiFalse
+        ' 
+        btnTelBaglamaTamamlandiFalse.Location = New Point(384, 257)
+        btnTelBaglamaTamamlandiFalse.Name = "btnTelBaglamaTamamlandiFalse"
+        btnTelBaglamaTamamlandiFalse.Size = New Size(91, 54)
+        btnTelBaglamaTamamlandiFalse.TabIndex = 80
+        btnTelBaglamaTamamlandiFalse.Text = "tel baglama tamamlandi false"
+        btnTelBaglamaTamamlandiFalse.UseVisualStyleBackColor = True
+        ' 
+        ' btnErpControllerTrue
+        ' 
+        btnErpControllerTrue.Location = New Point(762, 260)
+        btnErpControllerTrue.Name = "btnErpControllerTrue"
+        btnErpControllerTrue.Size = New Size(91, 43)
+        btnErpControllerTrue.TabIndex = 81
+        btnErpControllerTrue.Text = "erp watchdog true"
+        btnErpControllerTrue.UseVisualStyleBackColor = True
+        ' 
+        ' btnErpControllerFalse
+        ' 
+        btnErpControllerFalse.Location = New Point(868, 260)
+        btnErpControllerFalse.Name = "btnErpControllerFalse"
+        btnErpControllerFalse.Size = New Size(91, 43)
+        btnErpControllerFalse.TabIndex = 82
+        btnErpControllerFalse.Text = "erp watchdog false"
+        btnErpControllerFalse.UseVisualStyleBackColor = True
+        ' 
+        ' btnBalingControllerTrue
+        ' 
+        btnBalingControllerTrue.Location = New Point(762, 316)
+        btnBalingControllerTrue.Name = "btnBalingControllerTrue"
+        btnBalingControllerTrue.Size = New Size(91, 55)
+        btnBalingControllerTrue.TabIndex = 83
+        btnBalingControllerTrue.Text = "baling watchdog true"
+        btnBalingControllerTrue.UseVisualStyleBackColor = True
+        ' 
+        ' btnBaleControllerFalse
+        ' 
+        btnBaleControllerFalse.Location = New Point(868, 316)
+        btnBaleControllerFalse.Name = "btnBaleControllerFalse"
+        btnBaleControllerFalse.Size = New Size(91, 55)
+        btnBaleControllerFalse.TabIndex = 84
+        btnBaleControllerFalse.Text = "baling watchdog false"
+        btnBaleControllerFalse.UseVisualStyleBackColor = True
+        ' 
         ' Form1
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
         ClientSize = New Size(1225, 530)
+        Controls.Add(btnBaleControllerFalse)
+        Controls.Add(btnBalingControllerTrue)
+        Controls.Add(btnErpControllerFalse)
+        Controls.Add(btnErpControllerTrue)
+        Controls.Add(btnTelBaglamaTamamlandiFalse)
+        Controls.Add(btnTelBaglamaTamamlandiTrue)
+        Controls.Add(btnTelBaglamaBasladiFalse)
+        Controls.Add(btnTelBaglamaBasladiTrue)
+        Controls.Add(btnPreslemeTamamFalse)
+        Controls.Add(btnPreslemeTamamTrue)
+        Controls.Add(btnPreslemeBasladiFalse)
+        Controls.Add(btnPreslemeBasladiTrue)
+        Controls.Add(btnHedefKiloFalse)
+        Controls.Add(btnHedefKiloTrue)
+        Controls.Add(btnDolumBasladiFalse)
+        Controls.Add(btnDolumBasladiTrue)
+        Controls.Add(StatusStrip1)
+        Controls.Add(btnSetFalseRequest)
+        Controls.Add(btnSetTrueRequest)
+        Controls.Add(txtSaniye)
         Controls.Add(lblPingStatus)
         Controls.Add(lblConnectionStatus)
         Controls.Add(txtWriteOrderNo)
@@ -673,6 +909,8 @@ Partial Class Form1
         Controls.Add(btnConnect)
         Name = "Form1"
         Text = "Form1"
+        StatusStrip1.ResumeLayout(False)
+        StatusStrip1.PerformLayout()
         ResumeLayout(False)
         PerformLayout()
     End Sub
@@ -688,7 +926,6 @@ Partial Class Form1
     Friend WithEvents txtBaleWeight As TextBox
     Friend WithEvents btnWriteBaleWeight As Button
     Friend WithEvents txtWriteBaleWeight As TextBox
-    Friend WithEvents BackgroundWorker1 As System.ComponentModel.BackgroundWorker
     Friend WithEvents btnReadPressInfo As Button
     Friend WithEvents txtPressInfo As TextBox
     Friend WithEvents btnWritePressInfo As Button
@@ -742,4 +979,27 @@ Partial Class Form1
     Friend WithEvents connectionTimer As Timer
     Friend WithEvents lblConnectionStatus As Label
     Friend WithEvents lblPingStatus As Label
+    Friend WithEvents BackgroundWorker1 As System.ComponentModel.BackgroundWorker
+    Friend WithEvents txtSaniye As TextBox
+    Friend WithEvents btnSetTrueRequest As Button
+    Friend WithEvents btnSetFalseRequest As Button
+    Friend WithEvents StatusStrip1 As StatusStrip
+    Friend WithEvents pingStatus As ToolStripStatusLabel
+    Friend WithEvents lastJobContext As ToolStripStatusLabel
+    Friend WithEvents btnDolumBasladiTrue As Button
+    Friend WithEvents btnDolumBasladiFalse As Button
+    Friend WithEvents btnHedefKiloTrue As Button
+    Friend WithEvents btnHedefKiloFalse As Button
+    Friend WithEvents btnPreslemeBasladiTrue As Button
+    Friend WithEvents btnPreslemeBasladiFalse As Button
+    Friend WithEvents btnPreslemeTamamTrue As Button
+    Friend WithEvents btnPreslemeTamamFalse As Button
+    Friend WithEvents btnTelBaglamaBasladiTrue As Button
+    Friend WithEvents btnTelBaglamaBasladiFalse As Button
+    Friend WithEvents btnTelBaglamaTamamlandiTrue As Button
+    Friend WithEvents btnTelBaglamaTamamlandiFalse As Button
+    Friend WithEvents btnErpControllerTrue As Button
+    Friend WithEvents btnErpControllerFalse As Button
+    Friend WithEvents btnBalingControllerTrue As Button
+    Friend WithEvents btnBaleControllerFalse As Button
 End Class
